@@ -9,7 +9,6 @@ from sqlalchemy.sql import text
 import bokeh
 from bokeh.plotting import figure, output_file, show
 from random import seed
-from random import randint
 import numpy as np
 import pandas as pd
 import math
@@ -65,18 +64,45 @@ class tables(dbconnect):
             self.meta.create_all(self.engine)
             #print statement to confirm the table is succefully created
             print("Finish creating train_table")
+            # return traintable.insert().values()
+            # table = traintable.insert().values(X = data1, Y1 = data2, Y2 = data3, Y3 = data4, Y4 = data5)
+            # conn = self.engine.connect()
+            # result = conn.execute(table)
+
         except SQLAlchemyError as error:
             #displaying any syntax error that may occour
             print(error)
-        return traintable
-    # def inserData(self,*args):
-        
+    
+    # def inserData(self,data1,data2,data3,data4,data5):
+
+    #     # , data1,data2,data3,data4,data5
+    #     try:     
+            
+    #         traintable =Table(
+    #               'train_table', self.meta, 
+    #              Column('X', Float, primary_key = True), 
+    #              Column('Y1', Float), 
+    #              Column('Y2', Float),
+    #              Column('Y3', Float),
+    #              Column('Y4', Float),
+    #         )
+    #         table = traintable.insert().values(X = data1, Y1 = data2, Y2 = data3, Y3 = data4, Y4 = data5)
+    #         conn = self.engine.connect()
+    #         result = conn.execute(table)
+            
+    #     except SQLAlchemyError as error:
+    #         print(error) 
     
     #creating a method to check if a table exit in the database
     def table_exist(self,table_name):
-        ret = self.engine.has_table(table_name)
-        return ret
-
+        try:
+            ret = self.engine.has_table(table_name)
+            return ret
+        except:
+            print("The table does not Exist")
+            return None
+   
+    # def insert
 """
 Creating a class a class to load all csv files from the parent directory
 
@@ -99,9 +125,20 @@ class load_file(object):
 def main():
     # creating instance of tables class and passing on database connection string
     mytables = tables('sqlite:///writtenassignmentdatabase.db',MetaData(),True)
-    t = mytables.trainingset_table()
+    # mytables.trainingset_table()
     
-
+    # engine = create_engine('sqlite:///writtenassignmentdatabase.db', echo = False)
+    engine = tables('sqlite:///writtenassignmentdatabase.db',MetaData(),True)
+    # meta = MetaData()
+    meta = engine.meta
+    traintable =Table(
+                  'train_table',meta, 
+                 Column('X', Float, primary_key = True), 
+                 Column('Y1', Float), 
+                 Column('Y2', Float),
+                 Column('Y3', Float),
+                 Column('Y4', Float),
+            )
     #declaring lists to hold each column of the train dataset
     trainset_X = []; trainset_Y1 = []; trainset_Y2 = []; trainset_Y3 = []; trainset_Y4 = [];
 
@@ -118,6 +155,9 @@ def main():
     for file in csv_files:
         with open(file, 'r') as myFiles:
             print("Reading data from file: {}".format(file))
+
+            mytables.trainingset_table()
+
             #skipping the first row in the file
             next(myFiles)
             #variable to count the number of records inserted into the tables in the database 
@@ -127,7 +167,7 @@ def main():
                 #splitting files into individual index in memory
                 splitFile = data.split(',')
                 #verifying if the first file is train data
-                if(file == 'train.csv'):
+                if (file == 'train.csv'):
                     #loading the columns of train data into different lists
                     trainset_X.append(splitFile[0])
                     trainset_Y1.append(splitFile[1])
@@ -140,14 +180,23 @@ def main():
                     if No, the flow moves to else block, where train_table will be created 
                     and insert records from the train csv file into it
                     """
-                    if(mytables.table_exist("train_table")):
-                        continue
-                    else:
-                        t = mytables.trainingset_table
-                        ins = t.insert().values(X = splitFile[0], Y1 = splitFile[1], Y2 = splitFile[2], Y3 = splitFile[3], Y4 = splitFile[4])
-                        conn = mytables.engine.connect()
-                        result = conn.execute(ins)
-                        no_records += 1
+                    # if(mytables.table_exist("train_table")):
+                        # continue
+                    # else:
+                        # mytables.trainingset_table()
+
+                    # mytables.inserData(splitFile[0],splitFile[1],splitFile[2],splitFile[3],splitFile[4])
+                    ins = traintable.insert().values(X = splitFile[0], Y1 = splitFile[1], Y2 = splitFile[2], Y3 = splitFile[3], Y4 = splitFile[4])
+                    conn = mytables.engine.connect()
+                    result = conn.execute(ins)
+                    no_records += 1
+                    print("Inserting record no. {}".format(no_records))
+                    # print(trainset_X)
+                
+                elif (file == 'ideal.csv'):
+                    print("ideal file") 
+                
+
 
 
 
