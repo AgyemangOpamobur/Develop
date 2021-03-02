@@ -190,7 +190,14 @@ class calculation(object):
             return min_value
         except:
             print("Invalid input data")
-
+    
+    #method to find the maximum value of list supply to it
+    def maximumValue(self, data):
+        try:
+            max_value = max(data, key= data.get)
+            return max_value
+        except:
+            print("Invalid input data")
 
 
 
@@ -280,8 +287,11 @@ def main():
     idealY41 = []; idealY42 = []; idealY43 = []; idealY44 = [];  idealY45 = [];  idealY46 = [];  idealY47 = [];  idealY48 = [];  idealY49 = [];  idealY50 = []
     idealX = []
 
-    #declaaring list to hold each column of the test dataset
+    #declaring list to hold each column of the test dataset
     testX = []; testY = []
+
+    # declaring a dictionary to hold test set X and Y values 
+    testXYpair = {} 
 
     """
     Creating instance of load_file class 
@@ -407,6 +417,7 @@ def main():
                 elif (file == 'test.csv'):
                     testX.append(splitFile[0])
                     testY.append(splitFile[1])
+                    testXYpair[splitFile[0]] = splitFile[1]
     
     print("\n Calculation the Deviation of training data with the ideal function from Y1 to Y50  \n")
    
@@ -423,6 +434,7 @@ def main():
     # subtracting and squaring the trainset_Y1 from ideal function Y1 to Y50 
     # find the sum of the deviation     
     square = calculation() #instance of calculation class
+    
     #storing the results in a list
     devY1res1 = square.deviation(idealY1,trainset_Y1)
     sumY1res1 = square.sumDeviation(devY1res1) 
@@ -941,11 +953,7 @@ def main():
     min_trainset_Y2_key = square.minimumValue(trainsetY2Sum)
     min_trainset_Y3_key = square.minimumValue(trainsetY3Sum)
     min_trainset_Y4_key = square.minimumValue(trainsetY4Sum)
-
-    # print("The minimum function for trainset Y1 is: " + min_trainset_Y1_key)
-    # print("The minimum function for trainset Y2 is: " + min_trainset_Y2_key)
-    # print("The minimum function for trainset Y3 is: " + min_trainset_Y3_key)
-    # print("The minimum function for trainset Y4 is: " + min_trainset_Y4_key)
+    
 
     #declaring variables and lists to hold the key and value from the dictionaries  
     global min_trainset_Y4_value, min_trainset_Y3_value, min_trainset_Y2_value, min_trainset_Y1_value
@@ -955,45 +963,336 @@ def main():
         trainsetY1Sum_value.append(value)
         if key == min_trainset_Y1_key:
             min_trainset_Y1_value = value
-            # print("The corresponding value of "+min_trainset_Y1+" is : "+ str(value))
-
+    # getting corresponding value for train set Y2
     for key,value in trainsetY2Sum.items():
         trainsetY2Sum_value.append(value)
         if key == min_trainset_Y2_key:
             min_trainset_Y2_value = value
-            # print("The corresponding value of "+min_trainset_Y2+" is : "+ str(value))
-
+    # getting corresponding value for train set Y3
     for key,value in trainsetY3Sum.items():
         trainsetY3Sum_value.append(value)
         if key == min_trainset_Y3_key:
             min_trainset_Y3_value = value
-            # print("The corresponding value of "+min_trainset_Y3+" is : "+ str(value))
-
+    # getting corresponding value for train set Y4
     for key,value in trainsetY4Sum.items():
         trainsetY4Sum_value.append(value)
         if key == min_trainset_Y4_key:
             min_trainset_Y4_value = value
-            # print("The corresponding value of "+min_trainset_Y4+" is : "+ str(value))
-   
     
     print("The minimum function for trainset Y1 is: " + min_trainset_Y1_key + " value: "+ str(min_trainset_Y1_value))
     print("The minimum function for trainset Y2 is: " + min_trainset_Y2_key + " value: "+ str(min_trainset_Y2_value))
     print("The minimum function for trainset Y3 is: " + min_trainset_Y3_key + " value: "+ str(min_trainset_Y3_value))
     print("The minimum function for trainset Y4 is: " + min_trainset_Y4_key + " value: "+ str(min_trainset_Y4_value))
+
+    print("\n")
+##################################################################################################
+    """
+    Getting maximum values and their corresponding ideal function from the 
+    trainset Y1 - Y4 
+
+    """
+    # fetching the identity of the maximum value from the sum of all y-deviation square of the trainset Y1 to Y4
+    # first getting the maximum value's key from their dictionary
     
-    # min_trainset_Y1 = square.minimumValue(trainsetY1Sum)
+    max_trainset_Y1_key = square.maximumValue(trainsetY1Sum)
+    max_trainset_Y2_key = square.maximumValue(trainsetY2Sum)
+    max_trainset_Y3_key = square.maximumValue(trainsetY3Sum)
+    max_trainset_Y4_key = square.maximumValue(trainsetY4Sum)
+
+    #declaring variables and lists to hold the key and value from the dictionaries  
+    global max_trainset_Y4_value, max_trainset_Y3_value, max_trainset_Y2_value, max_trainset_Y1_value
+    trainsetY1Sum_value2 = []; trainsetY2Sum_value2 = []; trainsetY3Sum_value2 = []; trainsetY4Sum_value2 = []
+    # getting corresponding maximu value for train set Y1
+    for key,value in trainsetY1Sum.items():
+        trainsetY1Sum_value2.append(value)
+        if key == max_trainset_Y1_key:
+            max_trainset_Y1_value = value
+    # getting corresponding maximum value for train set Y2
+    for key,value in trainsetY2Sum.items():
+        trainsetY2Sum_value2.append(value)
+        if key == max_trainset_Y2_key:
+            max_trainset_Y2_value = value
+    # getting corresponding value for train set Y3
+    for key,value in trainsetY3Sum.items():
+        trainsetY3Sum_value2.append(value)
+        if key == max_trainset_Y3_key:
+            max_trainset_Y3_value = value
+    # getting corresponding value for train set Y4
+    for key,value in trainsetY4Sum.items():
+        trainsetY4Sum_value2.append(value)
+        if key == max_trainset_Y4_key:
+            max_trainset_Y4_value = value
     
-    # print(trainsetY4Sum)
-    # print("\n")
-    # print(sumY4res50)
-    # print("\n")
+    print("The maximum function for trainset Y1 is: " + max_trainset_Y1_key + " value: "+ str(max_trainset_Y1_value))
+    print("The maximum function for trainset Y2 is: " + max_trainset_Y2_key + " value: "+ str(max_trainset_Y2_value))
+    print("The maximum function for trainset Y3 is: " + max_trainset_Y3_key + " value: "+ str(max_trainset_Y3_value))
+    print("The maximum function for trainset Y4 is: " + max_trainset_Y4_key + " value: "+ str(max_trainset_Y4_value))
+ ##################################################################################################################################   
+    '''
+    Plotting the graph of the training set using Bokeh library
+    '''
+
+    # def plot_trainset_function():
+    #plotting trainset 1
+    # output_file("train_set.html")
+    # plot=figure(plot_width = 1000, plot_height=1000, x_axis_label="x axis", y_axis_label="y axis", x_range=(-20,20), y_range=(-10000,10000))
+    # plot.circle_dot(trainset_X, trainset_Y1,size=10,color='red',legend_label="train_set_Y1")
+    # plot.circle_dot
+    #plotting trainset 2
+    # plot.circle(trainset_X, trainset_Y2,size=10,color='blue',legend_label="train_set_Y2")
+    #plotting trainset 3
+    # plot.circle(trainset_X, trainset_Y3,size=10,color='green',legend="train_set_Y3")
+    #plotting trainset 4
+    # plot.circle(trainset_X, trainset_Y4,size=10,color='pink',legend="train_set_Y4")
+    # show(plot)
+    #################################################################################### 
+    # print(trainset_X)
     # print(trainset_Y1)
+    print("\n")
+    """
+    getting the value of test data X that matches with ideal set X
+    the match values of X will use to select the corresponding values of Y 
+    from the test.csv
+    """
+    idealsetX = set(idealX)
+    testsetX = set(testX)
+    bestFitX = list(testsetX.intersection(idealsetX))
+    # print(bestFitX)
+    # print(len(bestFitX))
+    # print("\n")
+    # print(testXYpair)
+
+        
+    """
+    using for loop fetch the Y values from the testXYpair dictionary
+    the matchin Y values are stored in bestFitY list which will be use to calculate the
+    deviation of Test set Y
+    """
+    bestFitY = [] # a list variable to hold all the values of mapping of Y in the test set
     
+    for key,value in testXYpair.items():
+        if key in bestFitX:
+            # print("x = {}".format(k))
+            # print("y = {}".format(v))
+            bestFitY.append(value)
+    # print(len(bestFitY))
 
-                
+    """
+    Fetch from the idealfunction table in rows from Y1 to Y50, functions that
+    best fit the selected test set X values.
+    These values will be kept in another 50 different list and will be used to calcuate the deviation 
+    """
+    #declaring multiple list to store data from the selected ideal functions from the ideal functiontable in the database
+    testIdealY1 = []; testIdealY2 = []; testIdealY3 = []; testIdealY4 = [];  testIdealY5 = [];  testIdealY6 = [];  testIdealY7 = [];  testIdealY8 = [];  testIdealY9 = [];  testIdealY10 = []
+    testIdealY11 = []; testIdealY12 = []; testIdealY13 = []; testIdealY14 = [];  testIdealY15 = [];  testIdealY16 = [];  testIdealY17 = [];  testIdealY18 = [];  testIdealY19 = [];  testIdealY20 = []
+    testIdealY21 = []; testIdealY22 = []; testIdealY23 = []; testIdealY24 = [];  testIdealY25 = [];  testIdealY26 = [];  testIdealY27 = [];  testIdealY28 = [];  testIdealY29 = [];  testIdealY30 = []
+    testIdealY31 = []; testIdealY32 = []; testIdealY33 = []; testIdealY34 = [];  testIdealY35 = [];  testIdealY36 = [];  testIdealY37 = [];  testIdealY38 = [];  testIdealY39 = [];  testIdealY40 = []
+    testIdealY41 = []; testIdealY42 = []; testIdealY43 = []; testIdealY44 = [];  testIdealY45 = [];  testIdealY46 = [];  testIdealY47 = [];  testIdealY48 = [];  testIdealY49 = [];  testIdealY50 = []
 
+    # writing query to fetch the data from the database
+    bestFitX_len = len(bestFitX)  # adding 1 to the length 
+    for i in range(0,bestFitX_len):
+        data = int(i)
+        dbX = bestFitX[data]
+        readData = engine.engine.execute('SELECT * FROM ideal_table where ideal_table.X = :id', id=dbX)
+        for row in readData:
+            testIdealY1.append(row[1])
+            testIdealY2.append(row[2])
+            testIdealY3.append(row[3])
+            testIdealY4.append(row[4])
+            testIdealY5.append(row[5])
+            testIdealY6.append(row[6])
+            testIdealY7.append(row[7])
+            testIdealY8.append(row[8])
+            testIdealY9.append(row[9])
+            testIdealY10.append(row[10])
+            testIdealY11.append(row[11])
+            testIdealY12.append(row[12])
+            testIdealY13.append(row[13])
+            testIdealY14.append(row[14])
+            testIdealY15.append(row[15])
+            testIdealY16.append(row[16])
+            testIdealY17.append(row[17])
+            testIdealY18.append(row[18])
+            testIdealY19.append(row[19])
+            testIdealY20.append(row[20])
+            testIdealY21.append(row[21])
+            testIdealY22.append(row[22])
+            testIdealY23.append(row[23])
+            testIdealY24.append(row[24])
+            testIdealY25.append(row[25])
+            testIdealY26.append(row[26])
+            testIdealY27.append(row[27])
+            testIdealY28.append(row[28])
+            testIdealY29.append(row[29])
+            testIdealY30.append(row[30])
+            testIdealY31.append(row[31])
+            testIdealY32.append(row[32])
+            testIdealY33.append(row[33])
+            testIdealY34.append(row[43])
+            testIdealY35.append(row[35])
+            testIdealY36.append(row[36])
+            testIdealY37.append(row[37])
+            testIdealY38.append(row[38])
+            testIdealY39.append(row[39])
+            testIdealY40.append(row[40])
+            testIdealY41.append(row[41])
+            testIdealY42.append(row[42])
+            testIdealY43.append(row[43])
+            testIdealY44.append(row[44])
+            testIdealY45.append(row[45])
+            testIdealY46.append(row[46])
+            testIdealY47.append(row[47])
+            testIdealY48.append(row[48])
+            testIdealY49.append(row[49])
+            testIdealY50.append(row[50])
+        
+    readData.close() 
+    # print(bestFitX)
+    # print("\n")   
+    # print(testIdealY1)
+    # print(len(testIdealY1))
+    #########################################################################################################
+    """
+    Calculating the deviation of the selected Y1 - Y50 values from the ideal function table that
+    match with selected test set X values
+    """
+    #storing the results in a list
+    testDevRes1 = square.deviation(testIdealY1,bestFitY)
+    testSumRes1 = square.sumDeviation(testDevRes1) 
+    testDevRes2 = square.deviation(testIdealY2,bestFitY)
+    testSumRes2 = square.sumDeviation(testDevRes2) 
+    testDevRes3 = square.deviation(testIdealY3,bestFitY)
+    testSumRes3 = square.sumDeviation(testDevRes3) 
+    testDevRes4 = square.deviation(testIdealY4,bestFitY)
+    testSumRes4 = square.sumDeviation(testDevRes4) 
+    testDevRes5 = square.deviation(testIdealY5,bestFitY)
+    testSumRes5 = square.sumDeviation(testDevRes5) 
+    testDevRes6 = square.deviation(testIdealY6,bestFitY)
+    testSumRes6 = square.sumDeviation(testDevRes6) 
+    testDevRes7 = square.deviation(testIdealY7,bestFitY)
+    testSumRes7 = square.sumDeviation(testDevRes7) 
+    testDevRes8 = square.deviation(testIdealY8,bestFitY)
+    testSumRes8 = square.sumDeviation(testDevRes8) 
+    testDevRes9 = square.deviation(testIdealY9,bestFitY)
+    testSumRes9 = square.sumDeviation(testDevRes9) 
+    testDevRes10 = square.deviation(testIdealY10,bestFitY)
+    testSumRes10 = square.sumDeviation(testDevRes10) 
+#----------------------------------------------------------------------
+    testDevRes11 = square.deviation(testIdealY11,bestFitY)
+    testSumRes11 = square.sumDeviation(testDevRes11) 
+    testDevRes12 = square.deviation(testIdealY12,bestFitY)
+    testSumRes12 = square.sumDeviation(testDevRes12) 
+    testDevRes13 = square.deviation(testIdealY13,bestFitY)
+    testSumRes13 = square.sumDeviation(testDevRes13) 
+    testDevRes14 = square.deviation(testIdealY14,bestFitY)
+    testSumRes14 = square.sumDeviation(testDevRes14) 
+    testDevRes15 = square.deviation(testIdealY15,bestFitY) 
+    testSumRes15 = square.sumDeviation(testDevRes15) 
+    testDevRes16 = square.deviation(testIdealY16,bestFitY)
+    testSumRes16 = square.sumDeviation(testDevRes16) 
+    testDevRes17 = square.deviation(testIdealY17,bestFitY)
+    testSumRes17 = square.sumDeviation(testDevRes17) 
+    testDevRes18 = square.deviation(testIdealY18,bestFitY)
+    testSumRes18 = square.sumDeviation(testDevRes18) 
+    testDevRes19 = square.deviation(testIdealY19,bestFitY)
+    testSumRes19 = square.sumDeviation(testDevRes19) 
+    testDevRes20 = square.deviation(testIdealY20,bestFitY)
+    testSumRes20 = square.sumDeviation(testDevRes20) 
+#-----------------------------------------------------------------------
+    testDevRes21 = square.deviation(testIdealY21,bestFitY)
+    testSumRes21 = square.sumDeviation(testDevRes21) 
+    testDevRes22 = square.deviation(testIdealY22,bestFitY)
+    testSumRes22 = square.sumDeviation(testDevRes22) 
+    testDevRes23 = square.deviation(testIdealY23,bestFitY)
+    testSumRes23 = square.sumDeviation(testDevRes23) 
+    testDevRes24 = square.deviation(testIdealY24,bestFitY)
+    testSumRes24 = square.sumDeviation(testDevRes24) 
+    testDevRes25 = square.deviation(testIdealY25,bestFitY)
+    testSumRes25 = square.sumDeviation(testDevRes25) 
+    testDevRes26 = square.deviation(testIdealY26,bestFitY)
+    testSumRes26 = square.sumDeviation(testDevRes26) 
+    testDevRes27 = square.deviation(testIdealY27,bestFitY)
+    testSumRes27 = square.sumDeviation(testDevRes27) 
+    testDevRes28 = square.deviation(testIdealY28,bestFitY)
+    testSumRes28 = square.sumDeviation(testDevRes28) 
+    testDevRes29 = square.deviation(testIdealY29,bestFitY)
+    testSumRes29 = square.sumDeviation(testDevRes29) 
+    testDevRes30 = square.deviation(testIdealY30,bestFitY)
+    testSumRes30 = square.sumDeviation(testDevRes30) 
+#-------------------------------------------------------------------------
+    testDevRes31 = square.deviation(testIdealY31,bestFitY)
+    testSumRes31 = square.sumDeviation(testDevRes31) 
+    testDevRes32 = square.deviation(testIdealY32,bestFitY)
+    testSumRes32 = square.sumDeviation(testDevRes32) 
+    testDevRes33 = square.deviation(testIdealY33,bestFitY)
+    testSumRes33 = square.sumDeviation(testDevRes33) 
+    testDevRes34 = square.deviation(testIdealY34,bestFitY)
+    testSumRes34 = square.sumDeviation(testDevRes34) 
+    testDevRes35 = square.deviation(testIdealY35,bestFitY)
+    testSumRes35 = square.sumDeviation(testDevRes35) 
+    testDevRes36 = square.deviation(testIdealY36,bestFitY)
+    testSumRes36 = square.sumDeviation(testDevRes36) 
+    testDevRes37 = square.deviation(testIdealY37,bestFitY)
+    testSumRes37 = square.sumDeviation(testDevRes37) 
+    testDevRes38 = square.deviation(testIdealY38,bestFitY)
+    testSumRes38 = square.sumDeviation(testDevRes38) 
+    testDevRes39 = square.deviation(testIdealY39,bestFitY)
+    testSumRes39 = square.sumDeviation(testDevRes39) 
+    testDevRes40 = square.deviation(testIdealY40,bestFitY)
+    testSumRes40 = square.sumDeviation(testDevRes40) 
+#----------------------------------------------------------------------
+    testDevRes41 = square.deviation(testIdealY41,bestFitY)
+    testSumRes41 = square.sumDeviation(testDevRes41) 
+    testDevRes42 = square.deviation(testIdealY42,bestFitY)
+    testSumRes42 = square.sumDeviation(testDevRes42) 
+    testDevRes43 = square.deviation(testIdealY43,bestFitY)
+    testSumRes43 = square.sumDeviation(testDevRes43) 
+    testDevRes44 = square.deviation(testIdealY44,bestFitY)
+    testSumRes44 = square.sumDeviation(testDevRes44) 
+    testDevRes45 = square.deviation(testIdealY45,bestFitY)
+    testSumRes45 = square.sumDeviation(testDevRes45) 
+    testDevRes46 = square.deviation(testIdealY46,bestFitY)
+    testSumRes46 = square.sumDeviation(testDevRes46) 
+    testDevRes47 = square.deviation(testIdealY47,bestFitY)
+    testSumRes47 = square.sumDeviation(testDevRes47) 
+    testDevRes48 = square.deviation(testIdealY48,bestFitY)
+    testSumRes48 = square.sumDeviation(testDevRes48) 
+    testDevRes49 = square.deviation(testIdealY49,bestFitY)
+    testSumRes49 = square.sumDeviation(testDevRes49) 
+    testDevRes50 = square.deviation(testIdealY50,bestFitY)
+    testSumRes50 = square.sumDeviation(testDevRes50) 
+    #################################################################################
+    """
+    Putting the summation of all the test set into a dictionary
+    testidY1 - testidY50 represent summation of deviation of test set Y1 to Y50
 
-
+    """
+    # Dictionary of test set Y1, Key = testidY1 - testidY50 and the value = testSumRes1 - testSumRes50
+    testSum = {'testidY1':testSumRes1,'testidY2':testSumRes2,'testidY3':testSumRes3,'testidY4':testSumRes4,'testidY5':testSumRes5,'testidY6':testSumRes6,'testidY7':testSumRes7,'testidY8':testSumRes8,'testidY9':testSumRes9,'testidY10':testSumRes10,
+    'testidY11':testSumRes11,'testidY12':testSumRes12,'testidY13':testSumRes13,'testidY14':testSumRes14,'testidY15':testSumRes15,'testidY16':testSumRes16,'testidY17':testSumRes17,'testidY18':testSumRes18,'testidY19':testSumRes19,'testidY20':testSumRes20,
+    'testidY21':testSumRes21,'testidY22':testSumRes22,'testidY23':testSumRes23,'testidY24':testSumRes24,'testidY25':testSumRes25,'testidY26':testSumRes26,'testidY27':testSumRes27,'testidY28':testSumRes28,'testidY29':testSumRes29,'testidY30':testSumRes30,
+    'testidY31':testSumRes31,'testidY32':testSumRes32,'testidY33':testSumRes33,'testidY34':testSumRes34,'testidY35':testSumRes35,'testidY36':testSumRes36,'testidY37':testSumRes37,'testidY38':testSumRes38,'testidY39':testSumRes39,'testidY40':testSumRes40,
+    'testidY41':testSumRes41,'testidY42':testSumRes42,'testidY43':testSumRes43,'testidY44':testSumRes44,'testidY45':testSumRes45,'testidY46':testSumRes46,'testidY47':testSumRes47,'testidY48':testSumRes48,'testidY49':testSumRes49,'testidY50':testSumRes50 
+    }   
+    
+    #Displaying the results of the into a pandas dataframe 
+    print('Test set deviation square of 50 ideal function')
+    dframetestset = pd.DataFrame({'TestsetX': bestFitX,
+    'TestDev(Y1)': testSumRes1,'TestDev(Y2)': testSumRes2,'TestDev(Y3)': testSumRes3,'TestDev(Y4)': testSumRes4,'TestDev(Y5)': testSumRes5,'TestDev(Y6)': testSumRes6,'TestDev(Y7)': testSumRes7,'TestDev(Y8)': testSumRes8,'TestDev(Y9)': testSumRes9,'TestDev(Y10)': testSumRes10, 
+    'TestDev(Y11)': testSumRes11,'TestDev(Y12)': testSumRes12,'TestDev(Y13)': testSumRes13,'TestDev(Y14)': testSumRes14,'TestDev(Y15)': testSumRes15,'TestDev(Y16)': testSumRes16,'TestDev(Y17)': testSumRes17,'TestDev(Y18)': testSumRes18,'TestDev(Y19)': testSumRes19,'TestDev(Y20)': testSumRes20,
+    'TestDev(Y21)': testSumRes21,'TestDev(Y22)': testSumRes22,'TestDev(Y23)': testSumRes23,'TestDev(Y24)': testSumRes24,'TestDev(Y25)': testSumRes25,'TestDev(Y26)': testSumRes26,'TestDev(Y27)': testSumRes27,'TestDev(Y28)': testSumRes28,'TestDev(Y29)': testSumRes29,'TestDev(Y30)': testSumRes30,
+    'TestDev(Y31)': testSumRes31,'TestDev(Y32)': testSumRes32,'TestDev(Y33)': testSumRes33,'TestDev(Y34)': testSumRes34,'TestDev(Y35)': testSumRes35,'TestDev(Y36)': testSumRes36,'TestDev(Y37)': testSumRes37,'TestDev(Y38)': testSumRes38,'TestDev(Y39)': testSumRes39,'TestDev(Y40)': testSumRes40,
+    'TestDev(Y41)': testSumRes41,'TestDev(Y42)': testSumRes42,'TestDev(Y43)': testSumRes43,'TestDev(Y44)': testSumRes44,'TestDev(Y45)': testSumRes45,'TestDev(Y46)': testSumRes46,'TestDev(Y47)': testSumRes47,'TestDev(Y48)': testSumRes48,'TestDev(Y49)': testSumRes49,'d^2(Y50)': testSumRes50
+    })
+    # print(dframetestset)
+    # print(testSumRes10)
+    # print(testSumRes20)
+    # print(testSumRes50)
+   
+    # idealset = set(np.sqrt(trainsetY1Sum_value))
+    # idealset = set(idealfunctionList)
+    
 
 
 if __name__ == '__main__':
