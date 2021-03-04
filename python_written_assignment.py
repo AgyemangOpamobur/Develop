@@ -6,6 +6,7 @@ And use the four ideal function to select best fit function out of a test set
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import text
+from itertools import groupby
 import bokeh
 from bokeh.plotting import figure, output_file, show
 from random import seed
@@ -15,6 +16,7 @@ import math
 import os
 import glob
 import csv
+from math import ceil 
 
 
 """
@@ -198,7 +200,39 @@ class calculation(object):
             return max_value
         except:
             print("Invalid input data")
+    
+    #method to calcualte factors of selected functions
+    def factors(self,sValues):
+        try:
+            self.array = []
+            square_root = list(np.sqrt(sValues))
+            counter = int(len(sValues))
+            RoundupFactor =  [round(x,1) for x in square_root] 
+            Format_Roundup = [element * 1 for element in RoundupFactor]
+            for n in range(0, counter):
+                for i in square_root:
+                    if(Format_Roundup[n] % 2 == 0):
+                        self.array.append(i)
+                        # if(i != square_root[n]):
+                        #     factors_of_trainsetY1Sum_values.append(Format_Roundup[n] / i)
+                        #     a=0
+            print("\n")
+            # Grouping the factors 
+            data = pd.Series(range(len(self.array))).groupby(self.array, sort=False).apply(list).tolist()
+            # print(data)
+            # print(len(data))
+            return data
 
+        except:
+            print("Invalid input data")
+
+    #method to select all the maximum factors of the selected list        
+    def max_factor(self, data):
+        try:
+           max_data =  [max(p) for p in data]
+           return max_data
+        except:
+            print("Invalid input data")
 
 
 #main function for method calling
@@ -985,7 +1019,7 @@ def main():
     print("The minimum function for trainset Y4 is: " + min_trainset_Y4_key + " value: "+ str(min_trainset_Y4_value))
 
     print("\n")
-##################################################################################################
+   ##################################################################################################  
     """
     Getting maximum values and their corresponding ideal function from the 
     trainset Y1 - Y4 
@@ -1027,6 +1061,13 @@ def main():
     print("The maximum function for trainset Y2 is: " + max_trainset_Y2_key + " value: "+ str(max_trainset_Y2_value))
     print("The maximum function for trainset Y3 is: " + max_trainset_Y3_key + " value: "+ str(max_trainset_Y3_value))
     print("The maximum function for trainset Y4 is: " + max_trainset_Y4_key + " value: "+ str(max_trainset_Y4_value))
+ 
+    #choosing the maximum deviation between the maximum deviation of the slected four ideal functions
+    # putting them in a list 
+    # maximumDeviation_list = [max_trainset_Y1_value,max_trainset_Y2_value,max_trainset_Y3_value,max_trainset_Y4_value]
+    maximumDeviation_list = [max_trainset_Y1_value,max_trainset_Y2_value,max_trainset_Y3_value,max_trainset_Y4_value]
+    maximumDeviation = max(maximumDeviation_list)
+    print("The maximum deviation is : " + str(maximumDeviation))
  ##################################################################################################################################   
     '''
     Plotting the graph of the training set using Bokeh library
@@ -1057,11 +1098,7 @@ def main():
     idealsetX = set(idealX)
     testsetX = set(testX)
     bestFitX = list(testsetX.intersection(idealsetX))
-    # print(bestFitX)
-    # print(len(bestFitX))
-    # print("\n")
-    # print(testXYpair)
-
+    
         
     """
     using for loop fetch the Y values from the testXYpair dictionary
@@ -1158,109 +1195,109 @@ def main():
     match with selected test set X values
     """
     #storing the results in a list
-    testDevRes1 = square.deviation(testIdealY1,bestFitY)
+    testDevRes1 = square.deviation(bestFitY,testIdealY1)
     testSumRes1 = square.sumDeviation(testDevRes1) 
-    testDevRes2 = square.deviation(testIdealY2,bestFitY)
+    testDevRes2 = square.deviation(bestFitY,testIdealY2)
     testSumRes2 = square.sumDeviation(testDevRes2) 
-    testDevRes3 = square.deviation(testIdealY3,bestFitY)
+    testDevRes3 = square.deviation(bestFitY,testIdealY3)
     testSumRes3 = square.sumDeviation(testDevRes3) 
-    testDevRes4 = square.deviation(testIdealY4,bestFitY)
+    testDevRes4 = square.deviation(bestFitY,testIdealY4)
     testSumRes4 = square.sumDeviation(testDevRes4) 
-    testDevRes5 = square.deviation(testIdealY5,bestFitY)
+    testDevRes5 = square.deviation(bestFitY,testIdealY5)
     testSumRes5 = square.sumDeviation(testDevRes5) 
-    testDevRes6 = square.deviation(testIdealY6,bestFitY)
+    testDevRes6 = square.deviation(bestFitY,testIdealY6)
     testSumRes6 = square.sumDeviation(testDevRes6) 
-    testDevRes7 = square.deviation(testIdealY7,bestFitY)
+    testDevRes7 = square.deviation(bestFitY,testIdealY7)
     testSumRes7 = square.sumDeviation(testDevRes7) 
-    testDevRes8 = square.deviation(testIdealY8,bestFitY)
+    testDevRes8 = square.deviation(bestFitY,testIdealY8)
     testSumRes8 = square.sumDeviation(testDevRes8) 
-    testDevRes9 = square.deviation(testIdealY9,bestFitY)
+    testDevRes9 = square.deviation(bestFitY,testIdealY9)
     testSumRes9 = square.sumDeviation(testDevRes9) 
-    testDevRes10 = square.deviation(testIdealY10,bestFitY)
+    testDevRes10 = square.deviation(bestFitY,testIdealY10)
     testSumRes10 = square.sumDeviation(testDevRes10) 
 #----------------------------------------------------------------------
-    testDevRes11 = square.deviation(testIdealY11,bestFitY)
+    testDevRes11 = square.deviation(bestFitY,testIdealY11)
     testSumRes11 = square.sumDeviation(testDevRes11) 
-    testDevRes12 = square.deviation(testIdealY12,bestFitY)
+    testDevRes12 = square.deviation(bestFitY,testIdealY12)
     testSumRes12 = square.sumDeviation(testDevRes12) 
-    testDevRes13 = square.deviation(testIdealY13,bestFitY)
+    testDevRes13 = square.deviation(bestFitY,testIdealY13)
     testSumRes13 = square.sumDeviation(testDevRes13) 
-    testDevRes14 = square.deviation(testIdealY14,bestFitY)
+    testDevRes14 = square.deviation(bestFitY,testIdealY14)
     testSumRes14 = square.sumDeviation(testDevRes14) 
-    testDevRes15 = square.deviation(testIdealY15,bestFitY) 
+    testDevRes15 = square.deviation(bestFitY,testIdealY15) 
     testSumRes15 = square.sumDeviation(testDevRes15) 
-    testDevRes16 = square.deviation(testIdealY16,bestFitY)
+    testDevRes16 = square.deviation(bestFitY,testIdealY16)
     testSumRes16 = square.sumDeviation(testDevRes16) 
-    testDevRes17 = square.deviation(testIdealY17,bestFitY)
+    testDevRes17 = square.deviation(bestFitY,testIdealY17)
     testSumRes17 = square.sumDeviation(testDevRes17) 
-    testDevRes18 = square.deviation(testIdealY18,bestFitY)
+    testDevRes18 = square.deviation(bestFitY,testIdealY18)
     testSumRes18 = square.sumDeviation(testDevRes18) 
-    testDevRes19 = square.deviation(testIdealY19,bestFitY)
+    testDevRes19 = square.deviation(bestFitY,testIdealY19)
     testSumRes19 = square.sumDeviation(testDevRes19) 
-    testDevRes20 = square.deviation(testIdealY20,bestFitY)
+    testDevRes20 = square.deviation(bestFitY,testIdealY20)
     testSumRes20 = square.sumDeviation(testDevRes20) 
 #-----------------------------------------------------------------------
-    testDevRes21 = square.deviation(testIdealY21,bestFitY)
+    testDevRes21 = square.deviation(bestFitY,testIdealY21)
     testSumRes21 = square.sumDeviation(testDevRes21) 
-    testDevRes22 = square.deviation(testIdealY22,bestFitY)
+    testDevRes22 = square.deviation(bestFitY,testIdealY22)
     testSumRes22 = square.sumDeviation(testDevRes22) 
-    testDevRes23 = square.deviation(testIdealY23,bestFitY)
+    testDevRes23 = square.deviation(bestFitY,testIdealY23)
     testSumRes23 = square.sumDeviation(testDevRes23) 
-    testDevRes24 = square.deviation(testIdealY24,bestFitY)
+    testDevRes24 = square.deviation(bestFitY,testIdealY24)
     testSumRes24 = square.sumDeviation(testDevRes24) 
-    testDevRes25 = square.deviation(testIdealY25,bestFitY)
+    testDevRes25 = square.deviation(bestFitY,testIdealY25)
     testSumRes25 = square.sumDeviation(testDevRes25) 
-    testDevRes26 = square.deviation(testIdealY26,bestFitY)
+    testDevRes26 = square.deviation(bestFitY,testIdealY26)
     testSumRes26 = square.sumDeviation(testDevRes26) 
-    testDevRes27 = square.deviation(testIdealY27,bestFitY)
+    testDevRes27 = square.deviation(bestFitY,testIdealY27)
     testSumRes27 = square.sumDeviation(testDevRes27) 
-    testDevRes28 = square.deviation(testIdealY28,bestFitY)
+    testDevRes28 = square.deviation(bestFitY,testIdealY28)
     testSumRes28 = square.sumDeviation(testDevRes28) 
-    testDevRes29 = square.deviation(testIdealY29,bestFitY)
+    testDevRes29 = square.deviation(bestFitY,testIdealY29)
     testSumRes29 = square.sumDeviation(testDevRes29) 
-    testDevRes30 = square.deviation(testIdealY30,bestFitY)
+    testDevRes30 = square.deviation(bestFitY,testIdealY30)
     testSumRes30 = square.sumDeviation(testDevRes30) 
 #-------------------------------------------------------------------------
-    testDevRes31 = square.deviation(testIdealY31,bestFitY)
+    testDevRes31 = square.deviation(bestFitY,testIdealY31)
     testSumRes31 = square.sumDeviation(testDevRes31) 
-    testDevRes32 = square.deviation(testIdealY32,bestFitY)
+    testDevRes32 = square.deviation(bestFitY,testIdealY32)
     testSumRes32 = square.sumDeviation(testDevRes32) 
-    testDevRes33 = square.deviation(testIdealY33,bestFitY)
+    testDevRes33 = square.deviation(bestFitY,testIdealY33)
     testSumRes33 = square.sumDeviation(testDevRes33) 
-    testDevRes34 = square.deviation(testIdealY34,bestFitY)
+    testDevRes34 = square.deviation(bestFitY,testIdealY34)
     testSumRes34 = square.sumDeviation(testDevRes34) 
-    testDevRes35 = square.deviation(testIdealY35,bestFitY)
+    testDevRes35 = square.deviation(bestFitY,testIdealY35)
     testSumRes35 = square.sumDeviation(testDevRes35) 
-    testDevRes36 = square.deviation(testIdealY36,bestFitY)
+    testDevRes36 = square.deviation(bestFitY,testIdealY36)
     testSumRes36 = square.sumDeviation(testDevRes36) 
-    testDevRes37 = square.deviation(testIdealY37,bestFitY)
+    testDevRes37 = square.deviation(bestFitY,testIdealY37)
     testSumRes37 = square.sumDeviation(testDevRes37) 
-    testDevRes38 = square.deviation(testIdealY38,bestFitY)
+    testDevRes38 = square.deviation(bestFitY,testIdealY38)
     testSumRes38 = square.sumDeviation(testDevRes38) 
-    testDevRes39 = square.deviation(testIdealY39,bestFitY)
+    testDevRes39 = square.deviation(bestFitY,testIdealY39)
     testSumRes39 = square.sumDeviation(testDevRes39) 
-    testDevRes40 = square.deviation(testIdealY40,bestFitY)
+    testDevRes40 = square.deviation(bestFitY,testIdealY40)
     testSumRes40 = square.sumDeviation(testDevRes40) 
 #----------------------------------------------------------------------
-    testDevRes41 = square.deviation(testIdealY41,bestFitY)
+    testDevRes41 = square.deviation(bestFitY,testIdealY41)
     testSumRes41 = square.sumDeviation(testDevRes41) 
-    testDevRes42 = square.deviation(testIdealY42,bestFitY)
+    testDevRes42 = square.deviation(bestFitY,testIdealY42)
     testSumRes42 = square.sumDeviation(testDevRes42) 
-    testDevRes43 = square.deviation(testIdealY43,bestFitY)
+    testDevRes43 = square.deviation(bestFitY,testIdealY43)
     testSumRes43 = square.sumDeviation(testDevRes43) 
-    testDevRes44 = square.deviation(testIdealY44,bestFitY)
+    testDevRes44 = square.deviation(bestFitY,testIdealY44)
     testSumRes44 = square.sumDeviation(testDevRes44) 
-    testDevRes45 = square.deviation(testIdealY45,bestFitY)
+    testDevRes45 = square.deviation(bestFitY,testIdealY45)
     testSumRes45 = square.sumDeviation(testDevRes45) 
-    testDevRes46 = square.deviation(testIdealY46,bestFitY)
+    testDevRes46 = square.deviation(bestFitY,testIdealY46)
     testSumRes46 = square.sumDeviation(testDevRes46) 
-    testDevRes47 = square.deviation(testIdealY47,bestFitY)
+    testDevRes47 = square.deviation(bestFitY,testIdealY47)
     testSumRes47 = square.sumDeviation(testDevRes47) 
-    testDevRes48 = square.deviation(testIdealY48,bestFitY)
+    testDevRes48 = square.deviation(bestFitY,testIdealY48)
     testSumRes48 = square.sumDeviation(testDevRes48) 
-    testDevRes49 = square.deviation(testIdealY49,bestFitY)
+    testDevRes49 = square.deviation(bestFitY,testIdealY49)
     testSumRes49 = square.sumDeviation(testDevRes49) 
-    testDevRes50 = square.deviation(testIdealY50,bestFitY)
+    testDevRes50 = square.deviation(bestFitY,testIdealY50)
     testSumRes50 = square.sumDeviation(testDevRes50) 
     #################################################################################
     """
@@ -1285,6 +1322,111 @@ def main():
     'TestDev(Y31)': testSumRes31,'TestDev(Y32)': testSumRes32,'TestDev(Y33)': testSumRes33,'TestDev(Y34)': testSumRes34,'TestDev(Y35)': testSumRes35,'TestDev(Y36)': testSumRes36,'TestDev(Y37)': testSumRes37,'TestDev(Y38)': testSumRes38,'TestDev(Y39)': testSumRes39,'TestDev(Y40)': testSumRes40,
     'TestDev(Y41)': testSumRes41,'TestDev(Y42)': testSumRes42,'TestDev(Y43)': testSumRes43,'TestDev(Y44)': testSumRes44,'TestDev(Y45)': testSumRes45,'TestDev(Y46)': testSumRes46,'TestDev(Y47)': testSumRes47,'TestDev(Y48)': testSumRes48,'TestDev(Y49)': testSumRes49,'d^2(Y50)': testSumRes50
     })
+
+    """
+    list to store values that are less or equal to the maximum deviation from the trainset 
+    and the ideal function 
+    looping through the deviated test set to select the qualify values
+    """
+
+
+    selectedTestValues = {key: value for key, value in testSum.items() if value <= maximumDeviation}
+    print(selectedTestValues)
+    
+    newTestvalue = []
+    for k,v in testSum.items():
+        if v < maximumDeviation:
+            newTestvalue.append(v)
+    # print("\n this new values")
+    # print(newTestvalue)
+    # print("\n new list square root")
+    # mynewList = np.sqrt(newTestvalue)
+    # mynewList_1 = np.sqrt(mynewList)
+    # mynewRoundedList =  [round(x,2) for x in mynewList_1] 
+    # print(mynewRoundedList)
+    print("\n")
+
+    maximumTestSum_values = []
+
+    # for k,v in testSum.items():
+    # print(maximumTestSum_values)
+    # print("\n")
+    maximumTestKey = square.maximumValue(testSum)
+    # getting corresponding value for train set Y4
+    global max_test_value
+    for key,value in testSum.items():
+        maximumTestSum_values.append(value)
+        if key == maximumTestKey:
+            max_test_value = value
+    
+    print(maximumTestKey)
+    print(max_test_value)
+    print(maximumDeviation)
+
+    # selectedTestValues_list = set(selectedTestValues)
+    # trainsetY1Sum_list = set(trainsetY1Sum)
+    # print(selectedTestValues_list.intersection(trainsetY1Sum))
+    #--------------------------------------------------------------------
+    print("\n")
+    # mylist4 = np.sqrt(trainsetY4Sum_value2)
+    # mylist_4 = np.sqrt(mylist4)
+    # myRoundedList4 =  [round(x,2) for x in mylist_4] 
+    # print(myRoundedList4)
+
+    # print(trainsetY1Sum_value2)
+    # print("\n")
+
+    # mylist3 = np.sqrt(trainsetY3Sum_value2)
+    # mylist_3 = np.sqrt(mylist3)
+    # myRoundedList3 =  [round(x,2) for x in mylist_3] 
+    # print(myRoundedList3)
+
+    # print(trainsetY2Sum_value2)
+    # print("\n")
+
+    # mylist2 = np.sqrt(trainsetY2Sum_value2)
+    # mylist_2 = np.sqrt(mylist2)
+    # myRoundedList2 =  [round(x,2) for x in mylist_2] 
+    # print(myRoundedList2)
+
+    # print(trainsetY3Sum_value2)
+    # print("\n")
+
+    # mylist1 = np.sqrt(trainsetY1Sum_value2)
+    # mylist_1 = np.sqrt(mylist1)
+    # myRoundedList1 =  [round(x,2) for x in mylist_1] 
+    # print(myRoundedList1)
+
+    # print(trainsetY4Sum_value2)
+    # print("\n")
+
+    #-----------------------------------------------
+    TestValuesChosen = []
+    for k,v in selectedTestValues.items():
+        TestValuesChosen.append(v)
+
+    # print(selectedTestValues)
+    # print(sValues)
+    #------------------------------------------------------
+    # mySlist_1 = np.sqrt(sValues)
+    # mySlist_2 = np.sqrt(mySlist_1)
+    # mySlist2 = np.sqrt(mySlist_1)
+    # mySRound =  [round(x,2) for x in mySlist2] 
+    # multiplyRound = [element * 2 for element in mySRound]
+
+    # print(multiplyRound)
+
+
+    # common_pairs = dict()
+    # for value in selectedTestValues:
+    #     if (value in trainsetY4Sum and selectedTestValues[value] == trainsetY4Sum[value]):
+    #         common_pairs[value] = selectedTestValues[value]
+    # print(common_pairs)
+
+    # print("\n")
+    # print(TestValuesChosen)
+
+
     # print(dframetestset)
     # print(testSumRes10)
     # print(testSumRes20)
@@ -1292,7 +1434,49 @@ def main():
    
     # idealset = set(np.sqrt(trainsetY1Sum_value))
     # idealset = set(idealfunctionList)
-    
+
+    """
+    Factor square root of the deviation of the difference between 
+    trainset(A) and Ideal function (c)
+    """
+   
+    factor_trainsetY1 = square.factors(trainsetY1Sum_value2)
+    print(factor_trainsetY1)
+    print("\n")
+    factor_trainsetY2 = square.factors(trainsetY2Sum_value2)
+    print(factor_trainsetY2)
+    print("\n")
+    factor_trainsetY3 = square.factors(trainsetY3Sum_value2)
+    print(factor_trainsetY3)
+    print("\n")
+    factor_trainsetY4 = square.factors(trainsetY4Sum_value2)
+    print(factor_trainsetY4)
+    print("\n")
+    factor_testset = square.factors(TestValuesChosen)
+    print(factor_testset)
+    print("\n")
+    # find max value factor in the factors
+    max_factors_trainsetY1 = square.max_factor(factor_trainsetY1)
+    print(max_factors_trainsetY1)
+    print("\n")
+    max_factors_trainsetY2 = square.max_factor(factor_trainsetY2)
+    print(max_factors_trainsetY2)
+    print("\n")
+    max_factors_trainsetY3 = square.max_factor(factor_trainsetY3)
+    print(max_factors_trainsetY3)
+    print("\n")
+    max_factors_trainsetY4 = square.max_factor(factor_trainsetY4)
+    print(max_factors_trainsetY4)
+    print("\n")
+    max_factors_testset = square.max_factor(factor_testset)
+    print(max_factors_testset)
+
+
+
+
+
+   ###########################################################################################
+
 
 
 if __name__ == '__main__':
