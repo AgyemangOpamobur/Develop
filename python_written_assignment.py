@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import text
 from itertools import groupby
 import bokeh
+import matplotlib.pyplot as plt
 from bokeh.plotting import figure, output_file, show
 from random import seed
 import numpy as np
@@ -138,6 +139,22 @@ class tables(dbconnect):
         except SQLAlchemyError as error:
             print(error)
     
+    def test_data_table(self):
+        print("Creating test_data table.................")
+        try:
+            test_data_table = Table(
+                'test_data_table', self.meta, 
+                Column('X_Test_Function', String, primary_key = True), 
+                Column('Y_Test_Function', String), 
+                Column('Delta_Y', String),
+                Column('No_of_Ideal_Func', String),
+                
+            )
+            self.meta.create_all(self.engine)
+            print("Finish creating test data table")
+        except SQLAlchemyError as error:
+            print(error)
+    
     #creating a method to check if a table exit in the database
     def table_exist(self,table_name):
         try:
@@ -211,12 +228,12 @@ class calculation(object):
             Format_Roundup = [element * 1 for element in RoundupFactor]
             for n in range(0, counter):
                 for i in square_root:
-                    if(Format_Roundup[n] % 2 == 0):
+                    if(Format_Roundup[n] % 3 == 0):
                         self.array.append(i)
                         # if(i != square_root[n]):
-                        #     factors_of_trainsetY1Sum_values.append(Format_Roundup[n] / i)
+                            # self.array.append(Format_Roundup[n] / i)
                         #     a=0
-            print("\n")
+            # print("\n")
             # Grouping the factors 
             data = pd.Series(range(len(self.array))).groupby(self.array, sort=False).apply(list).tolist()
             # print(data)
@@ -309,6 +326,14 @@ def main():
            Column('Y50', Float),
         )
 
+    test_data = Table(
+                'test_data_table', meta, 
+                Column('X_Test_Function', String, primary_key = True), 
+                Column('Y_Test_Function', String), 
+                Column('Delta_Y', String),
+                Column('No_of_Ideal_Func', String)
+                
+        )
 
     #declaring lists to hold each column of the train dataset
     trainset_X = []; trainset_Y1 = []; trainset_Y2 = []; trainset_Y3 = []; trainset_Y4 = [];
@@ -947,33 +972,33 @@ def main():
     idY1 - idY50 represent summation of deviation of ideal function Y1 to Y50
 
     """
-    # Dictionary of train set Y1, Key = idY1 - idY50 and the value = sumY1res1 - sumY1res50
-    trainsetY1Sum = {'idY1':sumY1res1,'idY2':sumY1res2,'idY3':sumY1res3,'idY4':sumY1res4,'idY5':sumY1res5,'idY6':sumY1res6,'idY7':sumY1res7,'idY8':sumY1res8,'idY9':sumY1res9,'idY10':sumY1res10,
-    'idY11':sumY1res11,'idY12':sumY1res12,'idY13':sumY1res13,'idY14':sumY1res14,'idY15':sumY1res15,'idY16':sumY1res16,'idY17':sumY1res17,'idY18':sumY1res18,'idY19':sumY1res19,'idY20':sumY1res20,
-    'idY21':sumY1res21,'idY22':sumY1res22,'idY23':sumY1res23,'idY24':sumY1res24,'idY25':sumY1res25,'idY26':sumY1res26,'idY27':sumY1res27,'idY28':sumY1res28,'idY29':sumY1res29,'idY30':sumY1res30,
-    'idY31':sumY1res31,'idY32':sumY1res32,'idY33':sumY1res33,'idY34':sumY1res34,'idY35':sumY1res35,'idY36':sumY1res36,'idY37':sumY1res37,'idY38':sumY1res38,'idY39':sumY1res39,'idY40':sumY1res40,
-    'idY41':sumY1res41,'idY42':sumY1res42,'idY43':sumY1res43,'idY44':sumY1res44,'idY45':sumY1res45,'idY46':sumY1res46,'idY47':sumY1res47,'idY48':sumY1res48,'idY49':sumY1res49,'idY50':sumY1res50 
+    # Dictionary of train set Y1, Key = Y1idY1 - Y1idY50 and the value = sumY1res1 - sumY1res50
+    trainsetY1Sum = {'Y1idY1':sumY1res1,'Y1idY2':sumY1res2,'Y1idY3':sumY1res3,'Y1idY4':sumY1res4,'Y1idY5':sumY1res5,'Y1idY6':sumY1res6,'Y1idY7':sumY1res7,'Y1idY8':sumY1res8,'Y1idY9':sumY1res9,'Y1idY10':sumY1res10,
+    'Y1idY11':sumY1res11,'Y1idY12':sumY1res12,'Y1idY13':sumY1res13,'Y1idY14':sumY1res14,'Y1idY15':sumY1res15,'Y1idY16':sumY1res16,'Y1idY17':sumY1res17,'Y1idY18':sumY1res18,'Y1idY19':sumY1res19,'Y1idY20':sumY1res20,
+    'Y1idY21':sumY1res21,'Y1idY22':sumY1res22,'Y1idY23':sumY1res23,'Y1idY24':sumY1res24,'Y1idY25':sumY1res25,'Y1idY26':sumY1res26,'Y1idY27':sumY1res27,'Y1idY28':sumY1res28,'Y1idY29':sumY1res29,'Y1idY30':sumY1res30,
+    'Y1idY31':sumY1res31,'Y1idY32':sumY1res32,'Y1idY33':sumY1res33,'Y1idY34':sumY1res34,'Y1idY35':sumY1res35,'Y1idY36':sumY1res36,'Y1idY37':sumY1res37,'Y1idY38':sumY1res38,'Y1idY39':sumY1res39,'Y1idY40':sumY1res40,
+    'Y1idY41':sumY1res41,'Y1idY42':sumY1res42,'Y1idY43':sumY1res43,'Y1idY44':sumY1res44,'Y1idY45':sumY1res45,'Y1idY46':sumY1res46,'Y1idY47':sumY1res47,'Y1idY48':sumY1res48,'Y1idY49':sumY1res49,'Y1idY50':sumY1res50 
     }   
     # Dictionary of train set Y2, Key = idY1 - idY50 and the value = sumY2res1 - sumY2res50
-    trainsetY2Sum = {'idY1':sumY2res1,'idY2':sumY2res2,'idY3':sumY2res3,'idY4':sumY2res4,'idY5':sumY2res5,'idY6':sumY2res6,'idY7':sumY2res7,'idY8':sumY2res8,'idY9':sumY2res9,'idY10':sumY2res10,
-    'idY11':sumY2res11,'idY12':sumY2res12,'idY13':sumY2res13,'idY14':sumY2res14,'idY15':sumY2res15,'idY16':sumY2res16,'idY17':sumY2res17,'idY18':sumY2res18,'idY19':sumY2res19,'idY20':sumY2res20,
-    'idY21':sumY2res21,'idY22':sumY2res22,'idY23':sumY2res23,'idY24':sumY2res24,'idY25':sumY2res25,'idY26':sumY2res26,'idY27':sumY2res27,'idY28':sumY2res28,'idY29':sumY2res29,'idY30':sumY2res30,
-    'idY31':sumY2res31,'idY32':sumY2res32,'idY33':sumY2res33,'idY34':sumY2res34,'idY35':sumY2res35,'idY36':sumY2res36,'idY37':sumY2res37,'idY38':sumY2res38,'idY39':sumY2res39,'idY40':sumY2res40,
-    'idY41':sumY2res41,'idY42':sumY2res42,'idY43':sumY2res43,'idY44':sumY2res44,'idY45':sumY2res45,'idY46':sumY2res46,'idY47':sumY2res47,'idY48':sumY2res48,'idY49':sumY2res49,'idY50':sumY2res50 
+    trainsetY2Sum = {'Y2idY1':sumY2res1,'Y2idY2':sumY2res2,'Y2idY3':sumY2res3,'Y2idY4':sumY2res4,'Y2idY5':sumY2res5,'Y2idY6':sumY2res6,'Y2idY7':sumY2res7,'Y2idY8':sumY2res8,'Y2idY9':sumY2res9,'Y2idY10':sumY2res10,
+    'Y2idY11':sumY2res11,'Y2idY12':sumY2res12,'Y2idY13':sumY2res13,'Y2idY14':sumY2res14,'Y2idY15':sumY2res15,'Y2idY16':sumY2res16,'Y2idY17':sumY2res17,'Y2idY18':sumY2res18,'Y2idY19':sumY2res19,'Y2idY20':sumY2res20,
+    'Y2idY21':sumY2res21,'Y2idY22':sumY2res22,'Y2idY23':sumY2res23,'Y2idY24':sumY2res24,'Y2idY25':sumY2res25,'Y2idY26':sumY2res26,'Y2idY27':sumY2res27,'Y2idY28':sumY2res28,'Y2idY29':sumY2res29,'Y2idY30':sumY2res30,
+    'Y2idY31':sumY2res31,'Y2idY32':sumY2res32,'Y2idY33':sumY2res33,'Y2idY34':sumY2res34,'Y2idY35':sumY2res35,'Y2idY36':sumY2res36,'Y2idY37':sumY2res37,'Y2idY38':sumY2res38,'Y2idY39':sumY2res39,'Y2idY40':sumY2res40,
+    'Y2idY41':sumY2res41,'Y2idY42':sumY2res42,'Y2idY43':sumY2res43,'Y2idY44':sumY2res44,'Y2idY45':sumY2res45,'Y2idY46':sumY2res46,'Y2idY47':sumY2res47,'Y2idY48':sumY2res48,'Y2idY49':sumY2res49,'Y2idY50':sumY2res50 
     }   
-    # Dictionary of train set Y3, Key = idY1 - idY50 and the value = sumY3res1 - sumY3res50
-    trainsetY3Sum = {'idY1':sumY3res1,'idY2':sumY3res2,'idY3':sumY3res3,'idY4':sumY3res4,'idY5':sumY3res5,'idY6':sumY3res6,'idY7':sumY3res7,'idY8':sumY3res8,'idY9':sumY3res9,'idY10':sumY3res10,
-    'idY11':sumY3res11,'idY12':sumY3res12,'idY13':sumY3res13,'idY14':sumY3res14,'idY15':sumY3res15,'idY16':sumY3res16,'idY17':sumY3res17,'idY18':sumY3res18,'idY19':sumY3res19,'idY20':sumY3res20,
-    'idY21':sumY3res21,'idY22':sumY3res22,'idY23':sumY3res23,'idY24':sumY3res24,'idY25':sumY3res25,'idY26':sumY3res26,'idY27':sumY3res27,'idY28':sumY3res28,'idY29':sumY3res29,'idY30':sumY3res30,
-    'idY31':sumY3res31,'idY32':sumY3res32,'idY33':sumY3res33,'idY34':sumY3res34,'idY35':sumY3res35,'idY36':sumY3res36,'idY37':sumY3res37,'idY38':sumY3res38,'idY39':sumY3res39,'idY40':sumY3res40,
-    'idY41':sumY3res41,'idY42':sumY3res42,'idY43':sumY3res43,'idY44':sumY3res44,'idY45':sumY3res45,'idY46':sumY3res46,'idY47':sumY3res47,'idY48':sumY3res48,'idY49':sumY3res49,'idY50':sumY3res50 
+    # Dictionary of train set Y3, Key = Y3idY1 - Y3idY50 and the value = sumY3res1 - sumY3res50
+    trainsetY3Sum = {'Y3idY1':sumY3res1,'Y3idY2':sumY3res2,'Y3idY3':sumY3res3,'Y3idY4':sumY3res4,'Y3idY5':sumY3res5,'Y3idY6':sumY3res6,'Y3idY7':sumY3res7,'Y3idY8':sumY3res8,'Y3idY9':sumY3res9,'Y3idY10':sumY3res10,
+    'Y3idY11':sumY3res11,'Y3idY12':sumY3res12,'Y3idY13':sumY3res13,'Y3idY14':sumY3res14,'Y3idY15':sumY3res15,'Y3idY16':sumY3res16,'Y3idY17':sumY3res17,'Y3idY18':sumY3res18,'Y3idY19':sumY3res19,'Y3idY20':sumY3res20,
+    'Y3idY21':sumY3res21,'Y3idY22':sumY3res22,'Y3idY23':sumY3res23,'Y3idY24':sumY3res24,'Y3idY25':sumY3res25,'Y3idY26':sumY3res26,'Y3idY27':sumY3res27,'Y3idY28':sumY3res28,'Y3idY29':sumY3res29,'Y3idY30':sumY3res30,
+    'Y3idY31':sumY3res31,'Y3idY32':sumY3res32,'Y3idY33':sumY3res33,'Y3idY34':sumY3res34,'Y3idY35':sumY3res35,'Y3idY36':sumY3res36,'Y3idY37':sumY3res37,'Y3idY38':sumY3res38,'Y3idY39':sumY3res39,'Y3idY40':sumY3res40,
+    'Y3idY41':sumY3res41,'Y3idY42':sumY3res42,'Y3idY43':sumY3res43,'Y3idY44':sumY3res44,'Y3idY45':sumY3res45,'Y3idY46':sumY3res46,'Y3idY47':sumY3res47,'Y3idY48':sumY3res48,'Y3idY49':sumY3res49,'Y3idY50':sumY3res50 
     } 
-    # Dictionary of train set Y4, Key = idY1 - idY50 and the value = sumY4res1 - sumY4res50
-    trainsetY4Sum = {'idY1':sumY4res1,'idY2':sumY4res2,'idY3':sumY4res3,'idY4':sumY4res4,'idY5':sumY4res5,'idY6':sumY4res6,'idY7':sumY4res7,'idY8':sumY4res8,'idY9':sumY4res9,'idY10':sumY4res10,
-    'idY11':sumY4res11,'idY12':sumY4res12,'idY13':sumY4res13,'idY14':sumY4res14,'idY15':sumY4res15,'idY16':sumY4res16,'idY17':sumY4res17,'idY18':sumY4res18,'idY19':sumY4res19,'idY20':sumY4res20,
-    'idY21':sumY4res21,'idY22':sumY4res22,'idY23':sumY4res23,'idY24':sumY4res24,'idY25':sumY4res25,'idY26':sumY4res26,'idY27':sumY4res27,'idY28':sumY4res28,'idY29':sumY4res29,'idY30':sumY4res30,
-    'idY31':sumY4res31,'idY32':sumY4res32,'idY33':sumY4res33,'idY34':sumY4res34,'idY35':sumY4res35,'idY36':sumY4res36,'idY37':sumY4res37,'idY38':sumY4res38,'idY39':sumY4res39,'idY40':sumY4res40,
-    'idY41':sumY4res41,'idY42':sumY4res42,'idY43':sumY4res43,'idY44':sumY4res44,'idY45':sumY4res45,'idY46':sumY4res46,'idY47':sumY4res47,'idY48':sumY4res48,'idY49':sumY4res49,'idY50':sumY4res50 
+    # Dictionary of train set Y4, Key = Y4idY1 - Y4idY50 and the value = sumY4res1 - sumY4res50
+    trainsetY4Sum = {'Y4idY1':sumY4res1,'Y4idY2':sumY4res2,'Y4idY3':sumY4res3,'Y4idY4':sumY4res4,'Y4idY5':sumY4res5,'Y4idY6':sumY4res6,'Y4idY7':sumY4res7,'Y4idY8':sumY4res8,'Y4idY9':sumY4res9,'Y4idY10':sumY4res10,
+    'Y4idY11':sumY4res11,'Y4idY12':sumY4res12,'Y4idY13':sumY4res13,'Y4idY14':sumY4res14,'Y4idY15':sumY4res15,'Y4idY16':sumY4res16,'Y4idY17':sumY4res17,'Y4idY18':sumY4res18,'Y4idY19':sumY4res19,'Y4idY20':sumY4res20,
+    'Y4idY21':sumY4res21,'Y4idY22':sumY4res22,'Y4idY23':sumY4res23,'Y4idY24':sumY4res24,'Y4idY25':sumY4res25,'Y4idY26':sumY4res26,'Y4idY27':sumY4res27,'Y4idY28':sumY4res28,'Y4idY29':sumY4res29,'Y4idY30':sumY4res30,
+    'Y4idY31':sumY4res31,'Y4idY32':sumY4res32,'Y4idY33':sumY4res33,'Y4idY34':sumY4res34,'Y4idY35':sumY4res35,'Y4idY36':sumY4res36,'Y4idY37':sumY4res37,'Y4idY38':sumY4res38,'Y4idY39':sumY4res39,'Y4idY40':sumY4res40,
+    'Y4idY41':sumY4res41,'Y4idY42':sumY4res42,'Y4idY43':sumY4res43,'Y4idY44':sumY4res44,'Y4idY45':sumY4res45,'Y4idY46':sumY4res46,'Y4idY47':sumY4res47,'Y4idY48':sumY4res48,'Y4idY49':sumY4res49,'Y4idY50':sumY4res50 
     } 
 ########################################################################################################################################################################
     """
@@ -983,40 +1008,40 @@ def main():
     """
     # fetching the identity of the minimum value from the sum of all y-deviation square of the trainset Y1 to Y4
     # first getting the minimum value's key from their dictionary
-    min_trainset_Y1_key = square.minimumValue(trainsetY1Sum)
-    min_trainset_Y2_key = square.minimumValue(trainsetY2Sum)
-    min_trainset_Y3_key = square.minimumValue(trainsetY3Sum)
-    min_trainset_Y4_key = square.minimumValue(trainsetY4Sum)
+    # min_trainset_Y1_key = square.minimumValue(trainsetY1Sum)
+    # min_trainset_Y2_key = square.minimumValue(trainsetY2Sum)
+    # min_trainset_Y3_key = square.minimumValue(trainsetY3Sum)
+    # min_trainset_Y4_key = square.minimumValue(trainsetY4Sum)
     
 
     #declaring variables and lists to hold the key and value from the dictionaries  
-    global min_trainset_Y4_value, min_trainset_Y3_value, min_trainset_Y2_value, min_trainset_Y1_value
-    trainsetY1Sum_value = []; trainsetY2Sum_value = []; trainsetY3Sum_value = []; trainsetY4Sum_value = []
-    # getting corresponding value for train set Y1
-    for key,value in trainsetY1Sum.items():
-        trainsetY1Sum_value.append(value)
-        if key == min_trainset_Y1_key:
-            min_trainset_Y1_value = value
-    # getting corresponding value for train set Y2
-    for key,value in trainsetY2Sum.items():
-        trainsetY2Sum_value.append(value)
-        if key == min_trainset_Y2_key:
-            min_trainset_Y2_value = value
-    # getting corresponding value for train set Y3
-    for key,value in trainsetY3Sum.items():
-        trainsetY3Sum_value.append(value)
-        if key == min_trainset_Y3_key:
-            min_trainset_Y3_value = value
-    # getting corresponding value for train set Y4
-    for key,value in trainsetY4Sum.items():
-        trainsetY4Sum_value.append(value)
-        if key == min_trainset_Y4_key:
-            min_trainset_Y4_value = value
+    # global min_trainset_Y4_value, min_trainset_Y3_value, min_trainset_Y2_value, min_trainset_Y1_value
+    # trainsetY1Sum_value = []; trainsetY2Sum_value = []; trainsetY3Sum_value = []; trainsetY4Sum_value = []
+    # # getting corresponding value for train set Y1
+    # for key,value in trainsetY1Sum.items():
+    #     trainsetY1Sum_value.append(value)
+    #     if key == min_trainset_Y1_key:
+    #         min_trainset_Y1_value = value
+    # # getting corresponding value for train set Y2
+    # for key,value in trainsetY2Sum.items():
+    #     trainsetY2Sum_value.append(value)
+    #     if key == min_trainset_Y2_key:
+    #         min_trainset_Y2_value = value
+    # # getting corresponding value for train set Y3
+    # for key,value in trainsetY3Sum.items():
+    #     trainsetY3Sum_value.append(value)
+    #     if key == min_trainset_Y3_key:
+    #         min_trainset_Y3_value = value
+    # # getting corresponding value for train set Y4
+    # for key,value in trainsetY4Sum.items():
+    #     trainsetY4Sum_value.append(value)
+    #     if key == min_trainset_Y4_key:
+    #         min_trainset_Y4_value = value
     
-    print("The minimum function for trainset Y1 is: " + min_trainset_Y1_key + " value: "+ str(min_trainset_Y1_value))
-    print("The minimum function for trainset Y2 is: " + min_trainset_Y2_key + " value: "+ str(min_trainset_Y2_value))
-    print("The minimum function for trainset Y3 is: " + min_trainset_Y3_key + " value: "+ str(min_trainset_Y3_value))
-    print("The minimum function for trainset Y4 is: " + min_trainset_Y4_key + " value: "+ str(min_trainset_Y4_value))
+    # print("The minimum function for trainset Y1 is: " + min_trainset_Y1_key + " value: "+ str(min_trainset_Y1_value))
+    # print("The minimum function for trainset Y2 is: " + min_trainset_Y2_key + " value: "+ str(min_trainset_Y2_value))
+    # print("The minimum function for trainset Y3 is: " + min_trainset_Y3_key + " value: "+ str(min_trainset_Y3_value))
+    # print("The minimum function for trainset Y4 is: " + min_trainset_Y4_key + " value: "+ str(min_trainset_Y4_value))
 
     print("\n")
    ##################################################################################################  
@@ -1069,24 +1094,7 @@ def main():
     maximumDeviation = max(maximumDeviation_list)
     print("The maximum deviation is : " + str(maximumDeviation))
  ##################################################################################################################################   
-    '''
-    Plotting the graph of the training set using Bokeh library
-    '''
-
-    # def plot_trainset_function():
-    #plotting trainset 1
-    # output_file("train_set.html")
-    # plot=figure(plot_width = 1000, plot_height=1000, x_axis_label="x axis", y_axis_label="y axis", x_range=(-20,20), y_range=(-10000,10000))
-    # plot.circle_dot(trainset_X, trainset_Y1,size=10,color='red',legend_label="train_set_Y1")
-    # plot.circle_dot
-    #plotting trainset 2
-    # plot.circle(trainset_X, trainset_Y2,size=10,color='blue',legend_label="train_set_Y2")
-    #plotting trainset 3
-    # plot.circle(trainset_X, trainset_Y3,size=10,color='green',legend="train_set_Y3")
-    #plotting trainset 4
-    # plot.circle(trainset_X, trainset_Y4,size=10,color='pink',legend="train_set_Y4")
-    # show(plot)
-    #################################################################################### 
+    
     # print(trainset_X)
     # print(trainset_Y1)
     print("\n")
@@ -1323,6 +1331,7 @@ def main():
     'TestDev(Y41)': testSumRes41,'TestDev(Y42)': testSumRes42,'TestDev(Y43)': testSumRes43,'TestDev(Y44)': testSumRes44,'TestDev(Y45)': testSumRes45,'TestDev(Y46)': testSumRes46,'TestDev(Y47)': testSumRes47,'TestDev(Y48)': testSumRes48,'TestDev(Y49)': testSumRes49,'d^2(Y50)': testSumRes50
     })
 
+    print(dframetestset)
     """
     list to store values that are less or equal to the maximum deviation from the trainset 
     and the ideal function 
@@ -1333,10 +1342,10 @@ def main():
     selectedTestValues = {key: value for key, value in testSum.items() if value <= maximumDeviation}
     print(selectedTestValues)
     
-    newTestvalue = []
-    for k,v in testSum.items():
-        if v < maximumDeviation:
-            newTestvalue.append(v)
+    # newTestvalue = []
+    # for k,v in testSum.items():
+    #     if v < maximumDeviation:
+    #         newTestvalue.append(v)
     # print("\n this new values")
     # print(newTestvalue)
     # print("\n new list square root")
@@ -1442,40 +1451,161 @@ def main():
    
     factor_trainsetY1 = square.factors(trainsetY1Sum_value2)
     print(factor_trainsetY1)
-    print("\n")
+    print("\n factor y2")
     factor_trainsetY2 = square.factors(trainsetY2Sum_value2)
     print(factor_trainsetY2)
-    print("\n")
+    print("\n factor y3")
     factor_trainsetY3 = square.factors(trainsetY3Sum_value2)
     print(factor_trainsetY3)
-    print("\n")
+    print("\n factor y4")
     factor_trainsetY4 = square.factors(trainsetY4Sum_value2)
     print(factor_trainsetY4)
-    print("\n")
+    print("\n factor test")
     factor_testset = square.factors(TestValuesChosen)
     print(factor_testset)
-    print("\n")
+    print("\n maximum factor y1")
     # find max value factor in the factors
     max_factors_trainsetY1 = square.max_factor(factor_trainsetY1)
     print(max_factors_trainsetY1)
-    print("\n")
+    print("\n maximum factor y2")
     max_factors_trainsetY2 = square.max_factor(factor_trainsetY2)
     print(max_factors_trainsetY2)
-    print("\n")
+    print("\n maximum factor y3")
     max_factors_trainsetY3 = square.max_factor(factor_trainsetY3)
     print(max_factors_trainsetY3)
-    print("\n")
+    print("\n maximum factor y4")
     max_factors_trainsetY4 = square.max_factor(factor_trainsetY4)
     print(max_factors_trainsetY4)
-    print("\n")
+    print("\n maximum factor test")
     max_factors_testset = square.max_factor(factor_testset)
     print(max_factors_testset)
-
-
-
-
-
    ###########################################################################################
+    print("\n finding the intersection")
+    f_test = set(max_factors_testset)
+    f_y1 = set(max_factors_trainsetY1)
+    f_y2 = set(max_factors_trainsetY2)
+    f_y3 = set(max_factors_trainsetY3)
+    f_y4 = set(max_factors_trainsetY4)
+    bestfit_test =[]
+    bestfit_key = []
+    delta_y = []
+    if(f_test.intersection(f_y1)):
+        bestfit_test = list(f_test.intersection(f_y1))
+        if(bestfit_test):
+            for k,v in trainsetY1Sum.items():
+                bestfit_key.append(k)
+    elif(f_test.intersection(f_y2)):
+        bestfit_test = list(f_test.intersection(f_y2))
+        if(bestfit_test):
+            for k,v in trainsetY2Sum.items():
+                bestfit_key.append(k)
+    elif(f_test.intersection(f_y3)):
+        bestfit_test = list(f_test.intersection(f_y3))
+        if(bestfit_test):
+            for k,v in trainsetY3Sum.items():
+                bestfit_key.append(k)
+    elif(f_test.intersection(f_y4)):
+        bestfit_test = list(f_test.intersection(f_y4))
+        if(bestfit_test):
+            for k,v in trainsetY4Sum.items():
+                bestfit_key.append(k)
+    for k,v in testSum.items():
+        delta_y.append(k)
+
+    print(bestfit_test)
+    print(len(max_factors_testset))
+    print("\n")
+    print(bestfit_key)
+    print("\n")
+    print(delta_y)
+    print("\n")
+    print(bestFitY)
+    print(len(bestFitY))
+    print("\n")
+    print(bestFitX)
+    print(len(bestFitX))
+    ###############################################################
+    if(mytables.table_exist("test_data_table")):
+        print("Test data table already exit in the database")
+    else:
+
+        mytables.test_data_table()
+        no_records_test = 0
+        for i in range(0, len(bestFitX)):
+            # if(i > len(delta_y)):
+                # break
+            # else:
+            if(i <= len(delta_y)):
+                #inserting records from the ideal csv file into the database
+                # insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[i], No_of_Ideal_Func = bestfit_key[i] )
+                insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[0], No_of_Ideal_Func = bestfit_key[0] )
+
+            else:
+                insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[i], No_of_Ideal_Func = bestfit_key[i] )
+
+                # insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[0], No_of_Ideal_Func = bestfit_key[0] )
+                # break
+                # continue
+            conn = mytables.engine.connect()
+            result = conn.execute(insert_testdata)
+            no_records_test += 1
+            print("Inserting ideal record no. {}".format(no_records_test))
+        #----------------------------------------------------------------
+#############################################################################################
+    '''
+        Plotting the graph of the training set using Bokeh library
+    '''
+
+    # def plot_trainset_function():
+    #plotting trainset 1
+    # output_file("train_set.html")
+    # plot=figure(plot_width = 1000, plot_height=1000, x_axis_label="x axis", y_axis_label="y axis", x_range=(-20,20), y_range=(-10000,10000))
+    # plot.circle_dot(trainset_X, trainset_Y1,size=10,color='red',legend_label="train_set_Y1")
+    # plot.circle_dot
+    #plotting trainset 2
+    # plot.circle(trainset_X, trainset_Y2,size=10,color='blue',legend_label="train_set_Y2")
+    #plotting trainset 3
+    # plot.circle(trainset_X, trainset_Y3,size=10,color='green',legend="train_set_Y3")
+    #plotting trainset 4
+    # plot.circle(trainset_X, trainset_Y4,size=10,color='pink',legend="train_set_Y4")
+    # show(plot)
+    # plt.style.use('seaborn-whitegrid')
+    # dim1 = int(len(trainset_X))
+    # x = np.linspace(0, 200, 400)
+    # # y = np.sin(x)
+    # # y = [4,-6,8,2,-9,10]
+    # plt.plot(trainset_X, trainset_Y1, 'o', color='black')
+    # plt.show()
+
+    df = pd.read_csv('train.csv')
+    # plt.subplots(1, 2, figsize=(8,6))
+    fig, ax = plt.subplots(1,2, figsize=(10, 6))
+    # ax.scatter(x = df['x'], y = df['y'], color = "red", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
+    # plt.xlabel("Test X")
+    # plt.ylabel("Test Y")
+    ax[0].scatter(x = df['x'], y = df['y1'], color = "red", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
+    ax[0].set_xlabel("Train X")
+    ax[0].set_ylabel("Train Y1")
+
+    ax[1].scatter(x = df['x'], y = df['y2'], color = "blue", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
+    ax[1].set_xlabel("Train X")
+    ax[1].set_ylabel("Train Y2")
+    plt.show()
+
+    # df = pd.read_csv('train.csv')
+    # plt.subplots(1, 2, figsize=(8,6))
+    fig, ax = plt.subplots(1,2, figsize=(10, 6))
+    ax[0].scatter(x = df['x'], y = df['y3'], color = "green", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
+    ax[0].set_xlabel("Train X")
+    ax[0].set_ylabel("Train Y3")
+    
+    ax[1].scatter(x = df['x'], y = df['y4'], color = "black", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
+    ax[1].set_xlabel("Train X")
+    ax[1].set_ylabel("Train Y1")
+    plt.show()
+
+    #################################################################################### 
+    
 
 
 
