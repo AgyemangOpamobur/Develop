@@ -200,7 +200,7 @@ class plot_graph(object):
         try:
             df = pd.read_csv(self.path)
             output_file(self.output)
-            plot=figure(plot_width = 700, plot_height=700, x_axis_label="x axis", y_axis_label="y axis")
+            plot=figure(plot_width = 600, plot_height=600, x_axis_label="x axis", y_axis_label="y axis")
             plot.circle_dot(x = df[self.x], y = df[self.y],size=10,color=self.c,legend_label=self.label)
             show(plot)
         except:
@@ -1388,17 +1388,11 @@ def main():
         delta_y.append(k)
 
     print(bestfit_test)
-    print(len(max_factors_testset))
-    print("\n")
+    # print(len(max_factors_testset))
+    print("\n Corresponding of the best fit values ")
     print(bestfit_key)
     print("\n")
-    print(delta_y)
-    print("\n")
-    print(bestFitY)
-    print(len(bestFitY))
-    print("\n")
-    print(bestFitX)
-    print(len(bestFitX))
+
     ###############################################################
     if(mytables.table_exist("test_data_table")):
         print("Test data table already exit in the database")
@@ -1410,21 +1404,16 @@ def main():
             # if(i > len(delta_y)):
                 # break
             # else:
-            if(i <= len(delta_y)):
+            if(i < 50):
                 #inserting records from the ideal csv file into the database
-                # insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[i], No_of_Ideal_Func = bestfit_key[i] )
-                insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[0], No_of_Ideal_Func = bestfit_key[0] )
-
-            else:
                 insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[i], No_of_Ideal_Func = bestfit_key[i] )
-
                 # insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[0], No_of_Ideal_Func = bestfit_key[0] )
-                # break
-                # continue
-            conn = mytables.engine.connect()
-            result = conn.execute(insert_testdata)
-            no_records_test += 1
-            print("Inserting ideal record no. {}".format(no_records_test))
+                conn = mytables.engine.connect()
+                result = conn.execute(insert_testdata)
+                no_records_test += 1
+                print("Inserting ideal record no. {}".format(no_records_test))
+            else:
+                pass  
         #----------------------------------------------------------------
     #############################################################################################
        
