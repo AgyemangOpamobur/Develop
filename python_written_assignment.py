@@ -67,11 +67,6 @@ class tables(dbconnect):
             self.meta.create_all(self.engine)
             #print statement to confirm the table is succefully created
             print("Finish creating train_table")
-            # return traintable.insert().values()
-            # table = traintable.insert().values(X = data1, Y1 = data2, Y2 = data3, Y3 = data4, Y4 = data5)
-            # conn = self.engine.connect()
-            # result = conn.execute(table)
-
         except SQLAlchemyError as error:
             #displaying any syntax error that may occour
             print(error)
@@ -175,11 +170,41 @@ class load_file(object):
         self.path = path  
     # method to hold all csv files in the parent folder or directory
     def load_data(self):
-        path = self.path
-        extension = 'csv'
-        os.chdir(path)
-        data = glob.glob('*.{}'.format(extension))     
-        return data
+        try:
+            path = self.path
+            extension = 'csv'
+            os.chdir(path)
+            data = glob.glob('*.{}'.format(extension))     
+            return data
+        except:
+            print("File cannot be found. Check the path")
+
+"""
+Creating a class that holds methods to plot the 
+graphs
+"""
+
+class plot_graph(object):
+
+    #constructor of class plot_graph
+    def __init__(self,path,output,x,y,c,label):
+        self.path = path
+        self.output = output
+        self.x = x
+        self.y = y
+        self.label = label
+        self.c = c
+
+    # method plot graph
+    def plotgraph(self):
+        try:
+            df = pd.read_csv(self.path)
+            output_file(self.output)
+            plot=figure(plot_width = 700, plot_height=700, x_axis_label="x axis", y_axis_label="y axis")
+            plot.circle_dot(x = df[self.x], y = df[self.y],size=10,color=self.c,legend_label=self.label)
+            show(plot)
+        except:
+            print("Invalid data. Check the arguments")
 
 """
 Creating a class that holds methods all calculation
@@ -201,15 +226,7 @@ class calculation(object):
             return sum_deviation 
         except:
             print("Invalid data supply to the sum function")
-    
-    #method to find the minimum value of list supply to it
-    def minimumValue(self, data):
-        try:
-            min_value = min(data, key= data.get)
-            return min_value
-        except:
-            print("Invalid input data")
-    
+        
     #method to find the maximum value of list supply to it
     def maximumValue(self, data):
         try:
@@ -233,11 +250,8 @@ class calculation(object):
                         # if(i != square_root[n]):
                             # self.array.append(Format_Roundup[n] / i)
                         #     a=0
-            # print("\n")
             # Grouping the factors 
             data = pd.Series(range(len(self.array))).groupby(self.array, sort=False).apply(list).tolist()
-            # print(data)
-            # print(len(data))
             return data
 
         except:
@@ -262,6 +276,7 @@ def main():
     engine = tables('sqlite:///writtenassignmentdatabase.db',MetaData(),True)
     # meta = MetaData()
     meta = engine.meta
+    # Protoype of the structure of train table
     traintable =Table(
                   'train_table',meta, 
                  Column('X', Float, primary_key = True), 
@@ -270,7 +285,7 @@ def main():
                  Column('Y3', Float),
                  Column('Y4', Float),
             )
-    
+    # Protoype of the structure of train table 
     ideal_table = Table(
            'ideal_table',meta, 
            Column('X', Float, primary_key = True), 
@@ -325,7 +340,7 @@ def main():
            Column('Y49', Float),
            Column('Y50', Float),
         )
-
+    # Protoype of the structure of train table
     test_data = Table(
                 'test_data_table', meta, 
                 Column('X_Test_Function', String, primary_key = True), 
@@ -366,8 +381,8 @@ def main():
         with open(file, 'r') as myFiles:
             print("Reading data from file: {}".format(file))
 
-            # mytables.trainingset_table()
-            # mytables.idealfunction_table()
+            mytables.trainingset_table()
+            mytables.idealfunction_table()
             #------------------------------------------
             #skipping the first splitFile in the file
             next(myFiles)
@@ -397,11 +412,11 @@ def main():
                     # else:
                         # mytables.trainingset_table()
                     #-----------------------------------------------------
-                    # insert_train = traintable.insert().values(X = splitFile[0], Y1 = splitFile[1], Y2 = splitFile[2], Y3 = splitFile[3], Y4 = splitFile[4])
-                    # conn = mytables.engine.connect()
-                    # result = conn.execute(insert_train)
-                    # no_records += 1
-                    # print("Inserting train record no. {}".format(no_records))
+                    insert_train = traintable.insert().values(X = splitFile[0], Y1 = splitFile[1], Y2 = splitFile[2], Y3 = splitFile[3], Y4 = splitFile[4])
+                    conn = mytables.engine.connect()
+                    result = conn.execute(insert_train)
+                    no_records += 1
+                    print("Inserting train record no. {}".format(no_records))
                    #-----------------------------------------------------------------------
                    
                 
@@ -460,17 +475,17 @@ def main():
                     idealY50.append(splitFile[50])
 
                     #inserting records from the ideal csv file into the database
-                    # insert_ideal = ideal_table.insert().values(X = splitFile[0], Y1 = splitFile[1], Y2 = splitFile[2], Y3 = splitFile[3], Y4 = splitFile[4], Y5 = splitFile[5], Y6 = splitFile[6], Y7 = splitFile[7], Y8 = splitFile[8], Y9 = splitFile[9], Y10 = splitFile[10],
-                    #     Y11 = splitFile[11], Y12 = splitFile[12], Y13 = splitFile[13], Y14 = splitFile[14], Y15 = splitFile[15], Y16 = splitFile[16], Y17 = splitFile[17], Y18 = splitFile[18], Y19 = splitFile[19], Y20 = splitFile[20],
-                    #     Y21 = splitFile[21], Y22 = splitFile[22], Y23 = splitFile[23], Y24 = splitFile[24], Y25 = splitFile[25], Y26 = splitFile[26], Y27 = splitFile[27], Y28 = splitFile[28], Y29 = splitFile[29], Y30 = splitFile[30], 
-                    #     Y31 = splitFile[31], Y32 = splitFile[32], Y33 = splitFile[33], Y34 = splitFile[34], Y35 = splitFile[35], Y36 = splitFile[36], Y37 = splitFile[37], Y38 = splitFile[38], Y39 = splitFile[39], Y40 = splitFile[40], 
-                    #     Y41 = splitFile[41], Y42 = splitFile[42], Y43 = splitFile[43], Y44 = splitFile[44], Y45 = splitFile[45], Y46 = splitFile[46], Y47 = splitFile[47], Y48 = splitFile[48], Y49 = splitFile[49], Y50 = splitFile[50]
+                    insert_ideal = ideal_table.insert().values(X = splitFile[0], Y1 = splitFile[1], Y2 = splitFile[2], Y3 = splitFile[3], Y4 = splitFile[4], Y5 = splitFile[5], Y6 = splitFile[6], Y7 = splitFile[7], Y8 = splitFile[8], Y9 = splitFile[9], Y10 = splitFile[10],
+                        Y11 = splitFile[11], Y12 = splitFile[12], Y13 = splitFile[13], Y14 = splitFile[14], Y15 = splitFile[15], Y16 = splitFile[16], Y17 = splitFile[17], Y18 = splitFile[18], Y19 = splitFile[19], Y20 = splitFile[20],
+                        Y21 = splitFile[21], Y22 = splitFile[22], Y23 = splitFile[23], Y24 = splitFile[24], Y25 = splitFile[25], Y26 = splitFile[26], Y27 = splitFile[27], Y28 = splitFile[28], Y29 = splitFile[29], Y30 = splitFile[30], 
+                        Y31 = splitFile[31], Y32 = splitFile[32], Y33 = splitFile[33], Y34 = splitFile[34], Y35 = splitFile[35], Y36 = splitFile[36], Y37 = splitFile[37], Y38 = splitFile[38], Y39 = splitFile[39], Y40 = splitFile[40], 
+                        Y41 = splitFile[41], Y42 = splitFile[42], Y43 = splitFile[43], Y44 = splitFile[44], Y45 = splitFile[45], Y46 = splitFile[46], Y47 = splitFile[47], Y48 = splitFile[48], Y49 = splitFile[49], Y50 = splitFile[50]
   
-                    #  )
-                    # conn = mytables.engine.connect()
-                    # result = conn.execute(insert_ideal)
-                    # no_records_ideal += 1
-                    # print("Inserting ideal record no. {}".format(no_records_ideal))
+                     )
+                    conn = mytables.engine.connect()
+                    result = conn.execute(insert_ideal)
+                    no_records_ideal += 1
+                    print("Inserting ideal record no. {}".format(no_records_ideal))
                     #-------------------------------------------------------------------------
 
                 elif (file == 'test.csv'):
@@ -935,7 +950,7 @@ def main():
     'd^2(Y31)': devY1res31,'d^2(Y32)': devY1res32,'d^2(Y33)': devY1res33,'d^2(Y34)': devY1res34,'d^2(Y35)': devY1res35,'d^2(Y36)': devY1res36,'d^2(Y37)': devY1res37,'d^2(Y38)': devY1res38,'d^2(Y39)': devY1res39,'d^2(Y40)': devY1res40,
     'd^2(Y41)': devY1res41,'d^2(Y42)': devY1res42,'d^2(Y43)': devY1res43,'d^2(Y44)': devY1res44,'d^2(Y45)': devY1res45,'d^2(Y46)': devY1res46,'d^2(Y47)': devY1res47,'d^2(Y48)': devY1res48,'d^2(Y49)': devY1res49,'d^2(Y50)': devY1res50
     })
-    # print(dframe1)
+    print(dframe1)
     print("\n")
     print('Training set Y2 deviation square of 50 ideal function')
     dframe2 = pd.DataFrame({'Trainset_Y2': trainset_Y2,
@@ -945,7 +960,7 @@ def main():
     'd^2(Y31)': devY2res31,'d^2(Y32)': devY2res32,'d^2(Y33)': devY2res33,'d^2(Y34)': devY2res34,'d^2(Y35)': devY2res35,'d^2(Y36)': devY2res36,'d^2(Y37)': devY2res37,'d^2(Y38)': devY2res38,'d^2(Y39)': devY2res39,'d^2(Y40)': devY2res40,
     'd^2(Y41)': devY2res41,'d^2(Y42)': devY2res42,'d^2(Y43)': devY2res43,'d^2(Y44)': devY2res44,'d^2(Y45)': devY2res45,'d^2(Y46)': devY2res46,'d^2(Y47)': devY2res47,'d^2(Y48)': devY2res48,'d^2(Y49)': devY2res49,'d^2(Y50)': devY2res50
     })
-    # print(dframe2)
+    print(dframe2)
     print("\n")
     print('Training set Y3 deviation square of 50 ideal function')
     dframe3 = pd.DataFrame({'Trainset_Y3': trainset_Y3,
@@ -955,7 +970,7 @@ def main():
     'd^2(Y31)': devY3res31,'d^2(Y32)': devY3res32,'d^2(Y33)': devY3res33,'d^2(Y34)': devY3res34,'d^2(Y35)': devY3res35,'d^2(Y36)': devY3res36,'d^2(Y37)': devY3res37,'d^2(Y38)': devY3res38,'d^2(Y39)': devY3res39,'d^2(Y40)': devY3res40,
     'd^2(Y41)': devY3res41,'d^2(Y42)': devY3res42,'d^2(Y43)': devY3res43,'d^2(Y44)': devY3res44,'d^2(Y45)': devY3res45,'d^2(Y46)': devY3res46,'d^2(Y47)': devY3res47,'d^2(Y48)': devY3res48,'d^2(Y49)': devY3res49,'d^2(Y50)': devY3res50
     })
-    # print(dframe3)
+    print(dframe3)
     print("\n")
     print('Training set Y4 deviation square of 50 ideal function')
     dframe4 = pd.DataFrame({'Trainset_Y3': trainset_Y4,
@@ -1000,49 +1015,8 @@ def main():
     'Y4idY31':sumY4res31,'Y4idY32':sumY4res32,'Y4idY33':sumY4res33,'Y4idY34':sumY4res34,'Y4idY35':sumY4res35,'Y4idY36':sumY4res36,'Y4idY37':sumY4res37,'Y4idY38':sumY4res38,'Y4idY39':sumY4res39,'Y4idY40':sumY4res40,
     'Y4idY41':sumY4res41,'Y4idY42':sumY4res42,'Y4idY43':sumY4res43,'Y4idY44':sumY4res44,'Y4idY45':sumY4res45,'Y4idY46':sumY4res46,'Y4idY47':sumY4res47,'Y4idY48':sumY4res48,'Y4idY49':sumY4res49,'Y4idY50':sumY4res50 
     } 
-########################################################################################################################################################################
-    """
-    Getting mininum values and their corresponding ideal function from the 
-    trainset Y1 - Y4 
-
-    """
-    # fetching the identity of the minimum value from the sum of all y-deviation square of the trainset Y1 to Y4
-    # first getting the minimum value's key from their dictionary
-    # min_trainset_Y1_key = square.minimumValue(trainsetY1Sum)
-    # min_trainset_Y2_key = square.minimumValue(trainsetY2Sum)
-    # min_trainset_Y3_key = square.minimumValue(trainsetY3Sum)
-    # min_trainset_Y4_key = square.minimumValue(trainsetY4Sum)
-    
-
-    #declaring variables and lists to hold the key and value from the dictionaries  
-    # global min_trainset_Y4_value, min_trainset_Y3_value, min_trainset_Y2_value, min_trainset_Y1_value
-    # trainsetY1Sum_value = []; trainsetY2Sum_value = []; trainsetY3Sum_value = []; trainsetY4Sum_value = []
-    # # getting corresponding value for train set Y1
-    # for key,value in trainsetY1Sum.items():
-    #     trainsetY1Sum_value.append(value)
-    #     if key == min_trainset_Y1_key:
-    #         min_trainset_Y1_value = value
-    # # getting corresponding value for train set Y2
-    # for key,value in trainsetY2Sum.items():
-    #     trainsetY2Sum_value.append(value)
-    #     if key == min_trainset_Y2_key:
-    #         min_trainset_Y2_value = value
-    # # getting corresponding value for train set Y3
-    # for key,value in trainsetY3Sum.items():
-    #     trainsetY3Sum_value.append(value)
-    #     if key == min_trainset_Y3_key:
-    #         min_trainset_Y3_value = value
-    # # getting corresponding value for train set Y4
-    # for key,value in trainsetY4Sum.items():
-    #     trainsetY4Sum_value.append(value)
-    #     if key == min_trainset_Y4_key:
-    #         min_trainset_Y4_value = value
-    
-    # print("The minimum function for trainset Y1 is: " + min_trainset_Y1_key + " value: "+ str(min_trainset_Y1_value))
-    # print("The minimum function for trainset Y2 is: " + min_trainset_Y2_key + " value: "+ str(min_trainset_Y2_value))
-    # print("The minimum function for trainset Y3 is: " + min_trainset_Y3_key + " value: "+ str(min_trainset_Y3_value))
-    # print("The minimum function for trainset Y4 is: " + min_trainset_Y4_key + " value: "+ str(min_trainset_Y4_value))
-
+    ########################################################################################################################################################################
+ 
     print("\n")
    ##################################################################################################  
     """
@@ -1082,11 +1056,6 @@ def main():
         if key == max_trainset_Y4_key:
             max_trainset_Y4_value = value
     
-    print("The maximum function for trainset Y1 is: " + max_trainset_Y1_key + " value: "+ str(max_trainset_Y1_value))
-    print("The maximum function for trainset Y2 is: " + max_trainset_Y2_key + " value: "+ str(max_trainset_Y2_value))
-    print("The maximum function for trainset Y3 is: " + max_trainset_Y3_key + " value: "+ str(max_trainset_Y3_value))
-    print("The maximum function for trainset Y4 is: " + max_trainset_Y4_key + " value: "+ str(max_trainset_Y4_value))
- 
     #choosing the maximum deviation between the maximum deviation of the slected four ideal functions
     # putting them in a list 
     # maximumDeviation_list = [max_trainset_Y1_value,max_trainset_Y2_value,max_trainset_Y3_value,max_trainset_Y4_value]
@@ -1095,9 +1064,6 @@ def main():
     print("The maximum deviation is : " + str(maximumDeviation))
  ##################################################################################################################################   
     
-    # print(trainset_X)
-    # print(trainset_Y1)
-    print("\n")
     """
     getting the value of test data X that matches with ideal set X
     the match values of X will use to select the corresponding values of Y 
@@ -1120,8 +1086,7 @@ def main():
             # print("x = {}".format(k))
             # print("y = {}".format(v))
             bestFitY.append(value)
-    # print(len(bestFitY))
-
+   
     """
     Fetch from the idealfunction table in rows from Y1 to Y50, functions that
     best fit the selected test set X values.
@@ -1193,10 +1158,6 @@ def main():
             testIdealY50.append(row[50])
         
     readData.close() 
-    # print(bestFitX)
-    # print("\n")   
-    # print(testIdealY1)
-    # print(len(testIdealY1))
     #########################################################################################################
     """
     Calculating the deviation of the selected Y1 - Y50 values from the ideal function table that
@@ -1330,36 +1291,18 @@ def main():
     'TestDev(Y31)': testSumRes31,'TestDev(Y32)': testSumRes32,'TestDev(Y33)': testSumRes33,'TestDev(Y34)': testSumRes34,'TestDev(Y35)': testSumRes35,'TestDev(Y36)': testSumRes36,'TestDev(Y37)': testSumRes37,'TestDev(Y38)': testSumRes38,'TestDev(Y39)': testSumRes39,'TestDev(Y40)': testSumRes40,
     'TestDev(Y41)': testSumRes41,'TestDev(Y42)': testSumRes42,'TestDev(Y43)': testSumRes43,'TestDev(Y44)': testSumRes44,'TestDev(Y45)': testSumRes45,'TestDev(Y46)': testSumRes46,'TestDev(Y47)': testSumRes47,'TestDev(Y48)': testSumRes48,'TestDev(Y49)': testSumRes49,'d^2(Y50)': testSumRes50
     })
-
     print(dframetestset)
+
     """
     list to store values that are less or equal to the maximum deviation from the trainset 
     and the ideal function 
     looping through the deviated test set to select the qualify values
     """
 
-
     selectedTestValues = {key: value for key, value in testSum.items() if value <= maximumDeviation}
     print(selectedTestValues)
     
-    # newTestvalue = []
-    # for k,v in testSum.items():
-    #     if v < maximumDeviation:
-    #         newTestvalue.append(v)
-    # print("\n this new values")
-    # print(newTestvalue)
-    # print("\n new list square root")
-    # mynewList = np.sqrt(newTestvalue)
-    # mynewList_1 = np.sqrt(mynewList)
-    # mynewRoundedList =  [round(x,2) for x in mynewList_1] 
-    # print(mynewRoundedList)
-    print("\n")
-
     maximumTestSum_values = []
-
-    # for k,v in testSum.items():
-    # print(maximumTestSum_values)
-    # print("\n")
     maximumTestKey = square.maximumValue(testSum)
     # getting corresponding value for train set Y4
     global max_test_value
@@ -1370,79 +1313,11 @@ def main():
     
     print(maximumTestKey)
     print(max_test_value)
-    print(maximumDeviation)
-
-    # selectedTestValues_list = set(selectedTestValues)
-    # trainsetY1Sum_list = set(trainsetY1Sum)
-    # print(selectedTestValues_list.intersection(trainsetY1Sum))
-    #--------------------------------------------------------------------
-    print("\n")
-    # mylist4 = np.sqrt(trainsetY4Sum_value2)
-    # mylist_4 = np.sqrt(mylist4)
-    # myRoundedList4 =  [round(x,2) for x in mylist_4] 
-    # print(myRoundedList4)
-
-    # print(trainsetY1Sum_value2)
-    # print("\n")
-
-    # mylist3 = np.sqrt(trainsetY3Sum_value2)
-    # mylist_3 = np.sqrt(mylist3)
-    # myRoundedList3 =  [round(x,2) for x in mylist_3] 
-    # print(myRoundedList3)
-
-    # print(trainsetY2Sum_value2)
-    # print("\n")
-
-    # mylist2 = np.sqrt(trainsetY2Sum_value2)
-    # mylist_2 = np.sqrt(mylist2)
-    # myRoundedList2 =  [round(x,2) for x in mylist_2] 
-    # print(myRoundedList2)
-
-    # print(trainsetY3Sum_value2)
-    # print("\n")
-
-    # mylist1 = np.sqrt(trainsetY1Sum_value2)
-    # mylist_1 = np.sqrt(mylist1)
-    # myRoundedList1 =  [round(x,2) for x in mylist_1] 
-    # print(myRoundedList1)
-
-    # print(trainsetY4Sum_value2)
-    # print("\n")
-
+    print(maximumDeviation) 
     #-----------------------------------------------
     TestValuesChosen = []
     for k,v in selectedTestValues.items():
         TestValuesChosen.append(v)
-
-    # print(selectedTestValues)
-    # print(sValues)
-    #------------------------------------------------------
-    # mySlist_1 = np.sqrt(sValues)
-    # mySlist_2 = np.sqrt(mySlist_1)
-    # mySlist2 = np.sqrt(mySlist_1)
-    # mySRound =  [round(x,2) for x in mySlist2] 
-    # multiplyRound = [element * 2 for element in mySRound]
-
-    # print(multiplyRound)
-
-
-    # common_pairs = dict()
-    # for value in selectedTestValues:
-    #     if (value in trainsetY4Sum and selectedTestValues[value] == trainsetY4Sum[value]):
-    #         common_pairs[value] = selectedTestValues[value]
-    # print(common_pairs)
-
-    # print("\n")
-    # print(TestValuesChosen)
-
-
-    # print(dframetestset)
-    # print(testSumRes10)
-    # print(testSumRes20)
-    # print(testSumRes50)
-   
-    # idealset = set(np.sqrt(trainsetY1Sum_value))
-    # idealset = set(idealfunctionList)
 
     """
     Factor square root of the deviation of the difference between 
@@ -1480,7 +1355,7 @@ def main():
     max_factors_testset = square.max_factor(factor_testset)
     print(max_factors_testset)
    ###########################################################################################
-    print("\n finding the intersection")
+    print("\n finding the variables that match")
     f_test = set(max_factors_testset)
     f_y1 = set(max_factors_trainsetY1)
     f_y2 = set(max_factors_trainsetY2)
@@ -1529,7 +1404,7 @@ def main():
         print("Test data table already exit in the database")
     else:
 
-        mytables.test_data_table()
+        mytables.test_data_table() #invoking method to create table test data in the database
         no_records_test = 0
         for i in range(0, len(bestFitX)):
             # if(i > len(delta_y)):
@@ -1551,63 +1426,56 @@ def main():
             no_records_test += 1
             print("Inserting ideal record no. {}".format(no_records_test))
         #----------------------------------------------------------------
-#############################################################################################
+    #############################################################################################
+       
     '''
-        Plotting the graph of the training set using Bokeh library
+    Plotting the graph of the training set using  Bokeh library
     '''
-
-    # def plot_trainset_function():
-    #plotting trainset 1
-    # output_file("train_set.html")
-    # plot=figure(plot_width = 1000, plot_height=1000, x_axis_label="x axis", y_axis_label="y axis", x_range=(-20,20), y_range=(-10000,10000))
-    # plot.circle_dot(trainset_X, trainset_Y1,size=10,color='red',legend_label="train_set_Y1")
-    # plot.circle_dot
-    #plotting trainset 2
-    # plot.circle(trainset_X, trainset_Y2,size=10,color='blue',legend_label="train_set_Y2")
-    #plotting trainset 3
-    # plot.circle(trainset_X, trainset_Y3,size=10,color='green',legend="train_set_Y3")
-    #plotting trainset 4
-    # plot.circle(trainset_X, trainset_Y4,size=10,color='pink',legend="train_set_Y4")
-    # show(plot)
-    # plt.style.use('seaborn-whitegrid')
-    # dim1 = int(len(trainset_X))
-    # x = np.linspace(0, 200, 400)
-    # # y = np.sin(x)
-    # # y = [4,-6,8,2,-9,10]
-    # plt.plot(trainset_X, trainset_Y1, 'o', color='black')
-    # plt.show()
-
-    df = pd.read_csv('train.csv')
-    # plt.subplots(1, 2, figsize=(8,6))
-    fig, ax = plt.subplots(1,2, figsize=(10, 6))
-    # ax.scatter(x = df['x'], y = df['y'], color = "red", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
-    # plt.xlabel("Test X")
-    # plt.ylabel("Test Y")
-    ax[0].scatter(x = df['x'], y = df['y1'], color = "red", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
-    ax[0].set_xlabel("Train X")
-    ax[0].set_ylabel("Train Y1")
-
-    ax[1].scatter(x = df['x'], y = df['y2'], color = "blue", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
-    ax[1].set_xlabel("Train X")
-    ax[1].set_ylabel("Train Y2")
-    plt.show()
-
-    # df = pd.read_csv('train.csv')
-    # plt.subplots(1, 2, figsize=(8,6))
-    fig, ax = plt.subplots(1,2, figsize=(10, 6))
-    ax[0].scatter(x = df['x'], y = df['y3'], color = "green", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
-    ax[0].set_xlabel("Train X")
-    ax[0].set_ylabel("Train Y3")
-    
-    ax[1].scatter(x = df['x'], y = df['y4'], color = "black", edgecolors = "white", linewidths = 0.1, alpha = 0.7)
-    ax[1].set_xlabel("Train X")
-    ax[1].set_ylabel("Train Y1")
-    plt.show()
+    #plotting trainset Y1
+    graph = plot_graph("train.csv", "trainset_y1.html",'x', 'y1','red', "trainset_y1")
+    graph.plotgraph()
+    #plotting trainset Y2
+    graph = plot_graph("train.csv", "trainset_y2.html",'x', 'y2','blue', "trainset_y2")
+    graph.plotgraph()
+    #plotting trainset Y3
+    graph = plot_graph("train.csv", "trainset_y3.html",'x', 'y3','green', "trainset_y3")
+    graph.plotgraph()
+    #plotting trainset Y4
+    graph = plot_graph("train.csv", "trainset_y4.html",'x', 'y4','orange', "trainset_y4")
+    graph.plotgraph()
 
     #################################################################################### 
     
+    '''
+    Plotting the graph of the test set using Bokeh library
+    '''
+    #plotting test set
+    graph1 = plot_graph("test.csv", "testset.html",'x', 'y','brown', "Test set")
+    graph1.plotgraph()
 
+    ############################################################################################
+    '''
+    Plotting the graph of the chosen ideal functiong using Bokeh library
+    '''
+   
+    idealFunctionX =[]
+    counter = len(trainsetY1Sum) + 1
+    for i in range(1, counter):
+        idealFunctionX.append(i)
+    #plotting ideal function 1 and 2
+    output_file("ideal_function.html")
+    plotFunction=figure(plot_width = 600, plot_height=600,x_axis_label="x axis",y_axis_label="y axis")
+    plotFunction.circle_dot(x= idealFunctionX, y = trainsetY1Sum_value2,size=10,color='red',legend="Ideal function 1")
+    plotFunction.circle_dot(x = idealFunctionX, y = trainsetY2Sum_value2,size=10,color='green',legend="Ideal function 2")
+    show(plotFunction)
+    #plotting ideal function 3 and 4
+    output_file("ideal_function2.html")
+    plotFunction2=figure(plot_width = 600, plot_height=600,x_axis_label="x axis",y_axis_label="y axis")
+    plotFunction2.circle_dot(x = idealFunctionX, y = trainsetY3Sum_value2,size=10,color='orange',legend="Ideal function 3")
+    plotFunction2.circle_dot(x = idealFunctionX, y = trainsetY4Sum_value2,size=10,color='blue',legend="Ideal function 4")
+    show(plotFunction2)
 
+    ############################################################################################
 
 if __name__ == '__main__':
     main() 
