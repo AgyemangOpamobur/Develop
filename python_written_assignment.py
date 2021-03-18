@@ -1,5 +1,5 @@
 """
-Python program to train a dataset and select for ideal function out of it.
+Python program to train a dataset and select four ideal function out of it.
 And use the four ideal function to select best fit function out of a test set
 """
 # importing needed libraries 
@@ -17,7 +17,8 @@ import math
 import os
 import glob
 import csv
-from math import ceil 
+import math 
+import unittest
 
 
 """
@@ -183,7 +184,6 @@ class load_file(object):
 Creating a class that holds methods to plot the 
 graphs
 """
-
 class plot_graph(object):
 
     #constructor of class plot_graph
@@ -205,6 +205,26 @@ class plot_graph(object):
             show(plot)
         except:
             print("Invalid data. Check the arguments")
+
+"""
+Creating a class to test all useful elements 
+"""
+# class UnitTestLoadFile(unittest.TestCase):
+#     def test_loadfile(self):
+        
+#         '''
+#         test the method to load file from the directory
+#         '''
+#         ld = load_file(p)
+
+        # math_operations = MathOperations()
+        # result = math_operations.math_addition(2, 5)
+        # self.assertEqual(result, 4, "The addition should be 4")
+    
+    
+
+
+
 
 """
 Creating a class that holds methods all calculation
@@ -980,7 +1000,7 @@ def main():
     'd^2(Y31)': devY4res31,'d^2(Y32)': devY4res32,'d^2(Y33)': devY4res33,'d^2(Y34)': devY4res34,'d^2(Y35)': devY4res35,'d^2(Y36)': devY4res36,'d^2(Y37)': devY4res37,'d^2(Y38)': devY4res38,'d^2(Y39)': devY4res39,'d^2(Y40)': devY4res40,
     'd^2(Y41)': devY4res41,'d^2(Y42)': devY4res42,'d^2(Y43)': devY4res43,'d^2(Y44)': devY4res44,'d^2(Y45)': devY4res45,'d^2(Y46)': devY4res46,'d^2(Y47)': devY4res47,'d^2(Y48)': devY4res48,'d^2(Y49)': devY4res49,'d^2(Y50)': devY4res50
     })
-    # print(dframe4)
+    print(dframe4)
  #########################################################################################################################################################
     """
     Putting the summation of all the training set into a dictionary
@@ -1035,7 +1055,7 @@ def main():
     #declaring variables and lists to hold the key and value from the dictionaries  
     global max_trainset_Y4_value, max_trainset_Y3_value, max_trainset_Y2_value, max_trainset_Y1_value
     trainsetY1Sum_value2 = []; trainsetY2Sum_value2 = []; trainsetY3Sum_value2 = []; trainsetY4Sum_value2 = []
-    # getting corresponding maximu value for train set Y1
+    # getting corresponding maximum value for train set Y1
     for key,value in trainsetY1Sum.items():
         trainsetY1Sum_value2.append(value)
         if key == max_trainset_Y1_key:
@@ -1062,6 +1082,7 @@ def main():
     maximumDeviation_list = [max_trainset_Y1_value,max_trainset_Y2_value,max_trainset_Y3_value,max_trainset_Y4_value]
     maximumDeviation = max(maximumDeviation_list)
     print("The maximum deviation is : " + str(maximumDeviation))
+    print("\n")
  ##################################################################################################################################   
     
     """
@@ -1083,8 +1104,7 @@ def main():
     
     for key,value in testXYpair.items():
         if key in bestFitX:
-            # print("x = {}".format(k))
-            # print("y = {}".format(v))
+            
             bestFitY.append(value)
    
     """
@@ -1300,7 +1320,7 @@ def main():
     """
 
     selectedTestValues = {key: value for key, value in testSum.items() if value <= maximumDeviation}
-    print(selectedTestValues)
+    # print(selectedTestValues)
     
     maximumTestSum_values = []
     maximumTestKey = square.maximumValue(testSum)
@@ -1311,9 +1331,9 @@ def main():
         if key == maximumTestKey:
             max_test_value = value
     
-    print(maximumTestKey)
-    print(max_test_value)
-    print(maximumDeviation) 
+    # print(maximumTestKey)
+    # print(max_test_value)
+    # print(maximumDeviation) 
     #-----------------------------------------------
     TestValuesChosen = []
     for k,v in selectedTestValues.items():
@@ -1323,7 +1343,6 @@ def main():
     Factor square root of the deviation of the difference between 
     trainset(A) and Ideal function (c)
     """
-   
     factor_trainsetY1 = square.factors(trainsetY1Sum_value2)
     print(factor_trainsetY1)
     print("\n factor y2")
@@ -1355,15 +1374,18 @@ def main():
     max_factors_testset = square.max_factor(factor_testset)
     print(max_factors_testset)
    ###########################################################################################
-    print("\n finding the variables that match")
+    print("\n finding the values that match")
+    #changing the arrays into sets
     f_test = set(max_factors_testset)
     f_y1 = set(max_factors_trainsetY1)
     f_y2 = set(max_factors_trainsetY2)
     f_y3 = set(max_factors_trainsetY3)
     f_y4 = set(max_factors_trainsetY4)
+    #declaring lists to store selected values and keys 
     bestfit_test =[]
     bestfit_key = []
     delta_y = []
+    #checking if there is a relation between the datasets
     if(f_test.intersection(f_y1)):
         bestfit_test = list(f_test.intersection(f_y1))
         if(bestfit_test):
@@ -1371,7 +1393,13 @@ def main():
                 bestfit_key.append(k)
     elif(f_test.intersection(f_y2)):
         bestfit_test = list(f_test.intersection(f_y2))
-        if(bestfit_test):
+        if not bestfit_test:
+            pass
+        # if(bestfit_test):
+        #     for k,v in trainsetY2Sum.items():
+        #         bestfit_key.append(k)
+        else:
+            # if(bestfit_test):
             for k,v in trainsetY2Sum.items():
                 bestfit_key.append(k)
     elif(f_test.intersection(f_y3)):
@@ -1389,7 +1417,7 @@ def main():
 
     print(bestfit_test)
     # print(len(max_factors_testset))
-    print("\n Corresponding of the best fit values ")
+    print("\n Corresponding of the best fit Keys ")
     print(bestfit_key)
     print("\n")
 
@@ -1400,11 +1428,12 @@ def main():
 
         mytables.test_data_table() #invoking method to create table test data in the database
         no_records_test = 0
+        limit = len(delta_y)
         for i in range(0, len(bestFitX)):
             # if(i > len(delta_y)):
                 # break
             # else:
-            if(i < 50):
+            if(i < limit):
                 #inserting records from the ideal csv file into the database
                 insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[i], No_of_Ideal_Func = bestfit_key[i] )
                 # insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[0], No_of_Ideal_Func = bestfit_key[0] )
@@ -1444,7 +1473,7 @@ def main():
 
     ############################################################################################
     '''
-    Plotting the graph of the chosen ideal functiong using Bokeh library
+    Plotting the graph of the chosen ideal functions using Bokeh library
     '''
    
     idealFunctionX =[]
