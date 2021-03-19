@@ -1,6 +1,6 @@
 """
-Python program to train a dataset and select four ideal function out of it.
-And use the four ideal function to select best fit function out of a test set
+Python program that train a training dataset with 50 ideal functions.
+The four trained dataset will be map to a test data to select one best fit function
 """
 # importing needed libraries 
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float
@@ -47,16 +47,7 @@ class tables(dbconnect):
     def trainingset_table(self):
         print("Creating train table.......")
         try:
-            """
-            create table train_table(
-                X float primary key,
-                Y1 float,
-                Y2 float,
-                Y3 float,
-                Y4 float
-            )
-            """         
-            
+                        
             traintable = Table(
                 'train_table', self.meta, 
                 Column('X', Float, primary_key = True), 
@@ -135,6 +126,7 @@ class tables(dbconnect):
         except SQLAlchemyError as error:
             print(error)
     
+     #creating test data table
     def test_data_table(self):
         print("Creating test_data table.................")
         try:
@@ -150,7 +142,7 @@ class tables(dbconnect):
             print("Finish creating test data table")
         except SQLAlchemyError as error:
             print(error)
-    
+       
     #creating a method to check if a table exit in the database
     def table_exist(self,table_name):
         try:
@@ -159,8 +151,7 @@ class tables(dbconnect):
         except:
             print("The table does not Exist")
             return None
-   
-    
+
 """
 Creating a class a class to load all csv files from the parent directory
 
@@ -205,23 +196,7 @@ class plot_graph(object):
             show(plot)
         except:
             print("Invalid data. Check the arguments")
-
-"""
-Creating a class to test all useful elements 
-"""
-# class UnitTestLoadFile(unittest.TestCase):
-#     def test_loadfile(self):
-        
-#         '''
-#         test the method to load file from the directory
-#         '''
-#         ld = load_file(p)
-
-        # math_operations = MathOperations()
-        # result = math_operations.math_addition(2, 5)
-        # self.assertEqual(result, 4, "The addition should be 4")
-    
-    
+ 
 
 
 
@@ -267,9 +242,7 @@ class calculation(object):
                 for i in square_root:
                     if(Format_Roundup[n] % 3 == 0):
                         self.array.append(i)
-                        # if(i != square_root[n]):
-                            # self.array.append(Format_Roundup[n] / i)
-                        #     a=0
+                       
             # Grouping the factors 
             data = pd.Series(range(len(self.array))).groupby(self.array, sort=False).apply(list).tolist()
             return data
@@ -389,7 +362,7 @@ def main():
 
     """
     Creating instance of load_file class 
-    passing the path of the directory of all csv files it the construstor of load_files as argument
+    passing the path of the directory of all csv files to the construstor of load_files as argument
     invoking load_data() method which returns list of all the csv files in the directory 
     """
     #instance of load_file class
@@ -400,10 +373,9 @@ def main():
     for file in csv_files:
         with open(file, 'r') as myFiles:
             print("Reading data from file: {}".format(file))
-
+            # invoking methods that create train and ideal function table
             mytables.trainingset_table()
             mytables.idealfunction_table()
-            #------------------------------------------
             #skipping the first splitFile in the file
             next(myFiles)
             #variable to count the number of records inserted into the tables in the database 
@@ -427,18 +399,12 @@ def main():
                     if No, the flow moves to else block, where train_table will be created 
                     and insert records from the train csv file into it
                     """
-                    # if(mytables.table_exist("train_table")):
-                        # continue
-                    # else:
-                        # mytables.trainingset_table()
-                    #-----------------------------------------------------
+                   
                     insert_train = traintable.insert().values(X = splitFile[0], Y1 = splitFile[1], Y2 = splitFile[2], Y3 = splitFile[3], Y4 = splitFile[4])
                     conn = mytables.engine.connect()
                     result = conn.execute(insert_train)
                     no_records += 1
                     print("Inserting train record no. {}".format(no_records))
-                   #-----------------------------------------------------------------------
-                   
                 
                 elif (file == 'ideal.csv'):
                     # loading the columns of ideal data into different list
@@ -506,11 +472,11 @@ def main():
                     result = conn.execute(insert_ideal)
                     no_records_ideal += 1
                     print("Inserting ideal record no. {}".format(no_records_ideal))
-                    #-------------------------------------------------------------------------
 
                 elif (file == 'test.csv'):
                     testX.append(splitFile[0])
                     testY.append(splitFile[1])
+                    #testXYpair is dictionary to store the X and Y values of the test data
                     testXYpair[splitFile[0]] = splitFile[1]
     
     print("\n Calculation the Deviation of training data with the ideal function from Y1 to Y50  \n")
@@ -518,13 +484,10 @@ def main():
     """
     calculating the deviation of Y1 of train set
     get the length of Y1 data from train set and use it as the upper limit for loop
-    and increase it by 1 to cover all values in the list 
-    
-    declaring multiple list to store deviation of Y1 up to 50 of train data Y1
+        
+    declaring multiple list to store deviation of Y1 up to Y50 of train data Y1
     formula (idealY1 - trainY1)^2
     """
-    # count = len(trainset_Y1) + 1
-
     # subtracting and squaring the trainset_Y1 from ideal function Y1 to Y50 
     # find the sum of the deviation     
     square = calculation() #instance of calculation class
@@ -550,7 +513,6 @@ def main():
     sumY1res9 = square.sumDeviation(devY1res9) 
     devY1res10 = square.deviation(idealY10,trainset_Y1)
     sumY1res10 = square.sumDeviation(devY1res10) 
-#----------------------------------------------------------------------
     devY1res11 = square.deviation(idealY11,trainset_Y1)
     sumY1res11 = square.sumDeviation(devY1res11) 
     devY1res12 = square.deviation(idealY12,trainset_Y1)
@@ -571,7 +533,6 @@ def main():
     sumY1res19 = square.sumDeviation(devY1res19) 
     devY1res20 = square.deviation(idealY20,trainset_Y1)
     sumY1res20 = square.sumDeviation(devY1res20) 
-#-----------------------------------------------------------------------
     devY1res21 = square.deviation(idealY21,trainset_Y1)
     sumY1res21 = square.sumDeviation(devY1res21) 
     devY1res22 = square.deviation(idealY22,trainset_Y1)
@@ -592,7 +553,6 @@ def main():
     sumY1res29 = square.sumDeviation(devY1res29) 
     devY1res30 = square.deviation(idealY30,trainset_Y1)
     sumY1res30 = square.sumDeviation(devY1res30) 
-#-------------------------------------------------------------------------
     devY1res31 = square.deviation(idealY31,trainset_Y1)
     sumY1res31 = square.sumDeviation(devY1res31) 
     devY1res32 = square.deviation(idealY32,trainset_Y1)
@@ -613,7 +573,6 @@ def main():
     sumY1res39 = square.sumDeviation(devY1res39) 
     devY1res40 = square.deviation(idealY40,trainset_Y1)
     sumY1res40 = square.sumDeviation(devY1res40) 
-#----------------------------------------------------------------------
     devY1res41 = square.deviation(idealY41,trainset_Y1)
     sumY1res41 = square.sumDeviation(devY1res41) 
     devY1res42 = square.deviation(idealY42,trainset_Y1)
@@ -634,8 +593,6 @@ def main():
     sumY1res49 = square.sumDeviation(devY1res49) 
     devY1res50 = square.deviation(idealY50,trainset_Y1)
     sumY1res50 = square.sumDeviation(devY1res50) 
-    #################################################################################
-    #################################################################################
     # subtracting and squaring the trainset_Y2 from ideal function Y1 to Y50 
     # find the sum of the deviation   
     devY2res1 = square.deviation(idealY1,trainset_Y2)
@@ -658,7 +615,6 @@ def main():
     sumY2res9 = square.sumDeviation(devY2res9) 
     devY2res10 = square.deviation(idealY10,trainset_Y2)
     sumY2res10 = square.sumDeviation(devY2res10) 
-#----------------------------------------------------------------------
     devY2res11 = square.deviation(idealY11,trainset_Y2)
     sumY2res11 = square.sumDeviation(devY2res11) 
     devY2res12 = square.deviation(idealY12,trainset_Y2)
@@ -679,7 +635,6 @@ def main():
     sumY2res19 = square.sumDeviation(devY2res19) 
     devY2res20 = square.deviation(idealY20,trainset_Y2)
     sumY2res20 = square.sumDeviation(devY2res20) 
-#-----------------------------------------------------------------------
     devY2res21 = square.deviation(idealY21,trainset_Y2)
     sumY2res21 = square.sumDeviation(devY2res21) 
     devY2res22 = square.deviation(idealY22,trainset_Y2)
@@ -700,7 +655,6 @@ def main():
     sumY2res29 = square.sumDeviation(devY2res29) 
     devY2res30 = square.deviation(idealY30,trainset_Y2)
     sumY2res30 = square.sumDeviation(devY2res30) 
-#-------------------------------------------------------------------------
     devY2res31 = square.deviation(idealY31,trainset_Y2)
     sumY2res31 = square.sumDeviation(devY2res31) 
     devY2res32 = square.deviation(idealY32,trainset_Y2)
@@ -742,8 +696,6 @@ def main():
     sumY2res49 = square.sumDeviation(devY2res49) 
     devY2res50 = square.deviation(idealY50,trainset_Y2)
     sumY2res50 = square.sumDeviation(devY2res50) 
-
-    #################################################################################
     # subtracting and squaring the trainset_Y3 from ideal function Y1 to Y50 
     # find the sum of the deviation   
     devY3res1 = square.deviation(idealY1,trainset_Y3)
@@ -766,7 +718,6 @@ def main():
     sumY3res9 = square.sumDeviation(devY3res9) 
     devY3res10 = square.deviation(idealY10,trainset_Y3)
     sumY3res10 = square.sumDeviation(devY3res10) 
-#----------------------------------------------------------------------
     devY3res11 = square.deviation(idealY11,trainset_Y3)
     sumY3res11 = square.sumDeviation(devY3res11) 
     devY3res12 = square.deviation(idealY12,trainset_Y3)
@@ -787,7 +738,6 @@ def main():
     sumY3res19 = square.sumDeviation(devY3res19) 
     devY3res20 = square.deviation(idealY20,trainset_Y3)
     sumY3res20 = square.sumDeviation(devY3res20) 
-#-----------------------------------------------------------------------
     devY3res21 = square.deviation(idealY21,trainset_Y3)
     sumY3res21 = square.sumDeviation(devY3res21) 
     devY3res22 = square.deviation(idealY22,trainset_Y3)
@@ -808,7 +758,6 @@ def main():
     sumY3res29 = square.sumDeviation(devY3res29) 
     devY3res30 = square.deviation(idealY30,trainset_Y3)
     sumY3res30 = square.sumDeviation(devY3res30) 
-#-------------------------------------------------------------------------
     devY3res31 = square.deviation(idealY31,trainset_Y3)
     sumY3res31 = square.sumDeviation(devY3res31) 
     devY3res32 = square.deviation(idealY32,trainset_Y3)
@@ -829,7 +778,6 @@ def main():
     sumY3res39 = square.sumDeviation(devY3res39) 
     devY3res40 = square.deviation(idealY40,trainset_Y3)
     sumY3res40 = square.sumDeviation(devY3res40) 
-#----------------------------------------------------------------------
     devY3res41 = square.deviation(idealY41,trainset_Y3)
     sumY3res41 = square.sumDeviation(devY3res41) 
     devY3res42 = square.deviation(idealY42,trainset_Y3)
@@ -849,9 +797,8 @@ def main():
     devY3res49 = square.deviation(idealY49,trainset_Y3)
     sumY3res49 = square.sumDeviation(devY3res49) 
     devY3res50 = square.deviation(idealY50,trainset_Y3)
-    sumY3res50 = square.sumDeviation(devY3res50) 
-    ###########################################################################################
-     # subtracting and squaring the trainset_Y4 from ideal function Y1 to Y50 
+    sumY3res50 = square.sumDeviation(devY3res50)   
+    # subtracting and squaring the trainset_Y4 from ideal function Y1 to Y50 
     # find the sum of the deviation   
     devY4res1 = square.deviation(idealY1,trainset_Y4)
     sumY4res1 = square.sumDeviation(devY4res1) 
@@ -873,7 +820,6 @@ def main():
     sumY4res9 = square.sumDeviation(devY4res9) 
     devY4res10 = square.deviation(idealY10,trainset_Y4)
     sumY4res10 = square.sumDeviation(devY4res10) 
-#----------------------------------------------------------------------
     devY4res11 = square.deviation(idealY11,trainset_Y4)
     sumY4res11 = square.sumDeviation(devY4res11) 
     devY4res12 = square.deviation(idealY12,trainset_Y4)
@@ -894,7 +840,6 @@ def main():
     sumY4res19 = square.sumDeviation(devY4res19) 
     devY4res20 = square.deviation(idealY20,trainset_Y4)
     sumY4res20 = square.sumDeviation(devY4res20) 
-#-----------------------------------------------------------------------
     devY4res21 = square.deviation(idealY21,trainset_Y4)
     sumY4res21 = square.sumDeviation(devY4res21) 
     devY4res22 = square.deviation(idealY22,trainset_Y4)
@@ -915,7 +860,6 @@ def main():
     sumY4res29 = square.sumDeviation(devY4res29) 
     devY4res30 = square.deviation(idealY30,trainset_Y4)
     sumY4res30 = square.sumDeviation(devY4res30) 
-#-------------------------------------------------------------------------
     devY4res31 = square.deviation(idealY31,trainset_Y4)
     sumY4res31 = square.sumDeviation(devY4res31) 
     devY4res32 = square.deviation(idealY32,trainset_Y4)
@@ -936,7 +880,6 @@ def main():
     sumY4res39 = square.sumDeviation(devY4res39) 
     devY4res40 = square.deviation(idealY40,trainset_Y4)
     sumY4res40 = square.sumDeviation(devY4res40) 
-#----------------------------------------------------------------------
     devY4res41 = square.deviation(idealY41,trainset_Y4)
     sumY4res41 = square.sumDeviation(devY4res41) 
     devY4res42 = square.deviation(idealY42,trainset_Y4)
@@ -957,7 +900,7 @@ def main():
     sumY4res49 = square.sumDeviation(devY4res49) 
     devY4res50 = square.deviation(idealY50,trainset_Y4)
     sumY4res50 = square.sumDeviation(devY4res50) 
-#####################################################################################################
+
     """
     Displaying trainset Y1 to Y4 deviation square of 50 ideal function in a table 
     using Pandas Dataframe
@@ -1001,8 +944,7 @@ def main():
     'd^2(Y41)': devY4res41,'d^2(Y42)': devY4res42,'d^2(Y43)': devY4res43,'d^2(Y44)': devY4res44,'d^2(Y45)': devY4res45,'d^2(Y46)': devY4res46,'d^2(Y47)': devY4res47,'d^2(Y48)': devY4res48,'d^2(Y49)': devY4res49,'d^2(Y50)': devY4res50
     })
     print(dframe4)
- #########################################################################################################################################################
-    """
+     """
     Putting the summation of all the training set into a dictionary
     idY1 - idY50 represent summation of deviation of ideal function Y1 to Y50
 
@@ -1035,10 +977,8 @@ def main():
     'Y4idY31':sumY4res31,'Y4idY32':sumY4res32,'Y4idY33':sumY4res33,'Y4idY34':sumY4res34,'Y4idY35':sumY4res35,'Y4idY36':sumY4res36,'Y4idY37':sumY4res37,'Y4idY38':sumY4res38,'Y4idY39':sumY4res39,'Y4idY40':sumY4res40,
     'Y4idY41':sumY4res41,'Y4idY42':sumY4res42,'Y4idY43':sumY4res43,'Y4idY44':sumY4res44,'Y4idY45':sumY4res45,'Y4idY46':sumY4res46,'Y4idY47':sumY4res47,'Y4idY48':sumY4res48,'Y4idY49':sumY4res49,'Y4idY50':sumY4res50 
     } 
-    ########################################################################################################################################################################
- 
     print("\n")
-   ##################################################################################################  
+     
     """
     Getting maximum values and their corresponding ideal function from the 
     trainset Y1 - Y4 
@@ -1083,20 +1023,18 @@ def main():
     maximumDeviation = max(maximumDeviation_list)
     print("The maximum deviation is : " + str(maximumDeviation))
     print("\n")
- ##################################################################################################################################   
-    
+   
     """
     getting the value of test data X that matches with ideal set X
-    the match values of X will use to select the corresponding values of Y 
+    the match values of X will be use to select the corresponding values of Y 
     from the test.csv
     """
     idealsetX = set(idealX)
     testsetX = set(testX)
     bestFitX = list(testsetX.intersection(idealsetX))
-    
         
     """
-    using for loop fetch the Y values from the testXYpair dictionary
+    using for loop to fetch the Y values from the testXYpair dictionary
     the matchin Y values are stored in bestFitY list which will be use to calculate the
     deviation of Test set Y
     """
@@ -1178,7 +1116,7 @@ def main():
             testIdealY50.append(row[50])
         
     readData.close() 
-    #########################################################################################################
+
     """
     Calculating the deviation of the selected Y1 - Y50 values from the ideal function table that
     match with selected test set X values
@@ -1204,7 +1142,6 @@ def main():
     testSumRes9 = square.sumDeviation(testDevRes9) 
     testDevRes10 = square.deviation(bestFitY,testIdealY10)
     testSumRes10 = square.sumDeviation(testDevRes10) 
-#----------------------------------------------------------------------
     testDevRes11 = square.deviation(bestFitY,testIdealY11)
     testSumRes11 = square.sumDeviation(testDevRes11) 
     testDevRes12 = square.deviation(bestFitY,testIdealY12)
@@ -1225,7 +1162,6 @@ def main():
     testSumRes19 = square.sumDeviation(testDevRes19) 
     testDevRes20 = square.deviation(bestFitY,testIdealY20)
     testSumRes20 = square.sumDeviation(testDevRes20) 
-#-----------------------------------------------------------------------
     testDevRes21 = square.deviation(bestFitY,testIdealY21)
     testSumRes21 = square.sumDeviation(testDevRes21) 
     testDevRes22 = square.deviation(bestFitY,testIdealY22)
@@ -1246,7 +1182,6 @@ def main():
     testSumRes29 = square.sumDeviation(testDevRes29) 
     testDevRes30 = square.deviation(bestFitY,testIdealY30)
     testSumRes30 = square.sumDeviation(testDevRes30) 
-#-------------------------------------------------------------------------
     testDevRes31 = square.deviation(bestFitY,testIdealY31)
     testSumRes31 = square.sumDeviation(testDevRes31) 
     testDevRes32 = square.deviation(bestFitY,testIdealY32)
@@ -1267,7 +1202,6 @@ def main():
     testSumRes39 = square.sumDeviation(testDevRes39) 
     testDevRes40 = square.deviation(bestFitY,testIdealY40)
     testSumRes40 = square.sumDeviation(testDevRes40) 
-#----------------------------------------------------------------------
     testDevRes41 = square.deviation(bestFitY,testIdealY41)
     testSumRes41 = square.sumDeviation(testDevRes41) 
     testDevRes42 = square.deviation(bestFitY,testIdealY42)
@@ -1288,7 +1222,7 @@ def main():
     testSumRes49 = square.sumDeviation(testDevRes49) 
     testDevRes50 = square.deviation(bestFitY,testIdealY50)
     testSumRes50 = square.sumDeviation(testDevRes50) 
-    #################################################################################
+    
     """
     Putting the summation of all the test set into a dictionary
     testidY1 - testidY50 represent summation of deviation of test set Y1 to Y50
@@ -1319,9 +1253,7 @@ def main():
     looping through the deviated test set to select the qualify values
     """
 
-    selectedTestValues = {key: value for key, value in testSum.items() if value <= maximumDeviation}
-    # print(selectedTestValues)
-    
+    selectedTestValues = {key: value for key, value in testSum.items() if value <= maximumDeviation} 
     maximumTestSum_values = []
     maximumTestKey = square.maximumValue(testSum)
     # getting corresponding value for train set Y4
@@ -1331,10 +1263,6 @@ def main():
         if key == maximumTestKey:
             max_test_value = value
     
-    # print(maximumTestKey)
-    # print(max_test_value)
-    # print(maximumDeviation) 
-    #-----------------------------------------------
     TestValuesChosen = []
     for k,v in selectedTestValues.items():
         TestValuesChosen.append(v)
@@ -1358,7 +1286,7 @@ def main():
     factor_testset = square.factors(TestValuesChosen)
     print(factor_testset)
     print("\n maximum factor y1")
-    # find max value factor in the factors
+    # find maximum value factor in the factors
     max_factors_trainsetY1 = square.max_factor(factor_trainsetY1)
     print(max_factors_trainsetY1)
     print("\n maximum factor y2")
@@ -1373,7 +1301,6 @@ def main():
     print("\n maximum factor test")
     max_factors_testset = square.max_factor(factor_testset)
     print(max_factors_testset)
-   ###########################################################################################
     print("\n finding the values that match")
     #changing the arrays into sets
     f_test = set(max_factors_testset)
@@ -1394,12 +1321,8 @@ def main():
     elif(f_test.intersection(f_y2)):
         bestfit_test = list(f_test.intersection(f_y2))
         if not bestfit_test:
-            pass
-        # if(bestfit_test):
-        #     for k,v in trainsetY2Sum.items():
-        #         bestfit_key.append(k)
+            pass   
         else:
-            # if(bestfit_test):
             for k,v in trainsetY2Sum.items():
                 bestfit_key.append(k)
     elif(f_test.intersection(f_y3)):
@@ -1416,12 +1339,10 @@ def main():
         delta_y.append(k)
 
     print(bestfit_test)
-    # print(len(max_factors_testset))
     print("\n Corresponding of the best fit Keys ")
     print(bestfit_key)
     print("\n")
 
-    ###############################################################
     if(mytables.table_exist("test_data_table")):
         print("Test data table already exit in the database")
     else:
@@ -1430,9 +1351,6 @@ def main():
         no_records_test = 0
         limit = len(delta_y)
         for i in range(0, len(bestFitX)):
-            # if(i > len(delta_y)):
-                # break
-            # else:
             if(i < limit):
                 #inserting records from the ideal csv file into the database
                 insert_testdata = test_data.insert().values( X_Test_Function = bestFitX[i], Y_Test_Function = bestFitY[i], Delta_Y = delta_y[i], No_of_Ideal_Func = bestfit_key[i] )
@@ -1443,9 +1361,7 @@ def main():
                 print("Inserting ideal record no. {}".format(no_records_test))
             else:
                 pass  
-        #----------------------------------------------------------------
-    #############################################################################################
-       
+               
     '''
     Plotting the graph of the training set using  Bokeh library
     '''
@@ -1462,8 +1378,6 @@ def main():
     graph = plot_graph("train.csv", "trainset_y4.html",'x', 'y4','orange', "trainset_y4")
     graph.plotgraph()
 
-    #################################################################################### 
-    
     '''
     Plotting the graph of the test set using Bokeh library
     '''
@@ -1471,7 +1385,6 @@ def main():
     graph1 = plot_graph("test.csv", "testset.html",'x', 'y','brown', "Test set")
     graph1.plotgraph()
 
-    ############################################################################################
     '''
     Plotting the graph of the chosen ideal functions using Bokeh library
     '''
@@ -1493,10 +1406,27 @@ def main():
     plotFunction2.circle_dot(x = idealFunctionX, y = trainsetY4Sum_value2,size=10,color='blue',legend="Ideal function 4")
     show(plotFunction2)
 
-    ############################################################################################
+"""
+Creating a class to test all useful elements 
+"""
+class UnitTestLoadFile(unittest.TestCase):
+    #unittest to check the type of file passed the load file function
+    def test_loadfile(self):
+        
+        '''
+        test the method to load file from the directory
+        '''
+        ld = load_file('C:/Users/KofiAgyemangOpambour/Desktop/python_project_work')
+        csv_files = ld.load_data()
+        for f in csv_files:            
+            self.assertEqual(f.endswith(".csv"), True, "The file should be csv")
 
+    
+   
 if __name__ == '__main__':
-    main() 
+    # main()
+    #invoking unittest method in the main
+    unittest.main() 
 
 
 
