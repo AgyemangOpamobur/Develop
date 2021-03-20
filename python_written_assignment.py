@@ -944,7 +944,7 @@ def main():
     'd^2(Y41)': devY4res41,'d^2(Y42)': devY4res42,'d^2(Y43)': devY4res43,'d^2(Y44)': devY4res44,'d^2(Y45)': devY4res45,'d^2(Y46)': devY4res46,'d^2(Y47)': devY4res47,'d^2(Y48)': devY4res48,'d^2(Y49)': devY4res49,'d^2(Y50)': devY4res50
     })
     print(dframe4)
-     """
+    """
     Putting the summation of all the training set into a dictionary
     idY1 - idY50 represent summation of deviation of ideal function Y1 to Y50
 
@@ -1424,7 +1424,7 @@ class UnitTestLoadFile(unittest.TestCase):
     
    
 if __name__ == '__main__':
-    # main()
+    main()
     #invoking unittest method in the main
     unittest.main() 
 
